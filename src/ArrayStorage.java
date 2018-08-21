@@ -5,23 +5,23 @@ import java.util.Arrays;
  */
 public class ArrayStorage {
     private Resume[] storage = new Resume[10000];
-    private int cnt = 0;
+    private int cntResume = 0;
 
     void clear() {
-        Arrays.fill(storage, 0, cnt, null);
-        cnt = 0;
+        Arrays.fill(storage, 0, cntResume, null);
+        cntResume = 0;
     }
 
     void save(Resume r) {
-        storage[cnt] = r;
-        cnt++;
+        storage[cntResume] = r;
+        cntResume++;
     }
 
     Resume get(String uuid) {
         if (uuid == null || uuid.isEmpty()) {
             return null;
         }
-        for (int i = 0; i < cnt; i++) {
+        for (int i = 0; i < cntResume; i++) {
             if (storage[i].uuid.equals(uuid)) {
                 return storage[i];
             }
@@ -30,13 +30,11 @@ public class ArrayStorage {
     }
 
     void delete(String uuid) {
-        if (uuid != null && !uuid.isEmpty()) {
-            for (int i = 0; i < cnt; i++) {
-                if (storage[i].uuid.equals(uuid)) {
-                    System.arraycopy(storage, i + 1, storage, i, cnt - 1 - i);
-                    cnt--;
-                    break;
-                }
+        for (int i = 0; i < cntResume; i++) {
+            if ((storage[i].uuid == null && uuid == null) || (storage[i].uuid != null && storage[i].uuid.equals(uuid))) {
+                System.arraycopy(storage, i + 1, storage, i, cntResume - 1 - i);
+                cntResume--;
+                break;
             }
         }
     }
@@ -45,10 +43,10 @@ public class ArrayStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     Resume[] getAll() {
-        return Arrays.copyOf(storage, cnt);
+        return Arrays.copyOf(storage, cntResume);
     }
 
     int size() {
-        return cnt;
+        return cntResume;
     }
 }
