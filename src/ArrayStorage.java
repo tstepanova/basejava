@@ -5,48 +5,78 @@ import java.util.Arrays;
  */
 public class ArrayStorage {
     private Resume[] storage = new Resume[10000];
-    private int cntResume = 0;
+    private int size = 0;
 
-    void clear() {
-        Arrays.fill(storage, 0, cntResume, null);
-        cntResume = 0;
+    public void clear() {
+        Arrays.fill(storage, 0, size, null);
+        size = 0;
     }
 
-    void save(Resume r) {
-        storage[cntResume] = r;
-        cntResume++;
+    public void save(Resume r) {
+        if (size() < storage.length) {
+            if (indexResumeInStorage(r.uuid) == -1) {
+                storage[size] = r;
+                size++;
+            } else {
+                System.out.println("ERROR: resume already exists");
+            }
+        } else {
+            System.out.println("ERROR: failed save resume");
+        }
     }
 
-    Resume get(String uuid) {
-        if (uuid == null || uuid.isEmpty()) {
+    public void update(Resume r) {
+        int index = indexResumeInStorage(r.uuid);
+        if (index > -1) {
+            storage[index] = r;
+        } else {
+            System.out.println("ERROR: failed update resume");
+        }
+    }
+
+    public Resume get(String uuid) {
+        int index = indexResumeInStorage(uuid);
+        if (index > -1) {
+            return storage[index];
+        } else {
+            System.out.println("ERROR: failed get resume");
             return null;
         }
-        for (int i = 0; i < cntResume; i++) {
-            if (storage[i].uuid.equals(uuid)) {
-                return storage[i];
-            }
-        }
-        return null;
     }
 
-    void delete(String uuid) {
-        for (int i = 0; i < cntResume; i++) {
-            if (storage[i].uuid.equals(uuid)) {
-                System.arraycopy(storage, i + 1, storage, i, cntResume - 1 - i);
-                cntResume--;
-                break;
-            }
+    public void delete(String uuid) {
+        int index = indexResumeInStorage(uuid);
+        if (index > -1) {
+            storage[index] = storage[size - 1];
+            storage[size - 1] = null;
+            size--;
+        } else {
+            System.out.println("ERROR: failed delete resume");
         }
     }
 
     /**
      * @return array, contains only Resumes in storage (without null)
      */
-    Resume[] getAll() {
-        return Arrays.copyOf(storage, cntResume);
+    public Resume[] getAll() {
+        Resume[] result = Arrays.copyOf(storage, size);
+        return result;
     }
 
-    int size() {
-        return cntResume;
+    public int size() {
+        return size;
+    }
+
+    /**
+     * @return int (Resume index in storage), if the resume is in the repository,
+     * otherwise it returns -1
+     */
+    private int indexResumeInStorage(String uuid) {
+        for (int i = 0; i < size; i++) {
+            if (storage[i].uuid.equals(uuid)) {
+                return i;
+            }
+        }
+        return -1;
     }
 }
