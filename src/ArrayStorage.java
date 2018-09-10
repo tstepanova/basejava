@@ -10,7 +10,7 @@ public class ArrayStorage {
     }
 
     public void save(Resume r) {
-        if (this.size < storage.length) {
+        if (size < storage.length) {
             if (indexResumeInStorage(r.uuid) == -1) {
                 storage[size] = r;
                 size++;
