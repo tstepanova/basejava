@@ -22,28 +22,28 @@ public class MainTestArrayStorage {
     }
 
     static void testArrayStorage(Storage storage) {
-        Resume r1 = new Resume();
-        r1.setUuid("uuid1");
-        Resume r2 = new Resume();
-        r2.setUuid("uuid2");
-        Resume r3 = new Resume();
-        r3.setUuid("uuid3");
-        Resume r4 = new Resume();
-        r4.setUuid("uuid2");
+        Resume resume1 = new Resume();
+        resume1.setUuid("uuid1");
+        Resume resume2 = new Resume();
+        resume2.setUuid("uuid2");
+        Resume resume3 = new Resume();
+        resume3.setUuid("uuid3");
+        Resume resume4 = new Resume();
+        resume4.setUuid("uuid2");
 
-        storage.save(r3);
-        storage.save(r2);
-        storage.update(r4);
-        storage.save(r1);
+        storage.save(resume3);
+        storage.save(resume2);
+        storage.update(resume4);
+        storage.save(resume1);
 
         System.out.println("\n");
-        System.out.println("Get r1: " + storage.get(r1.getUuid()));
+        System.out.println("Get resume1: " + storage.get(resume1.getUuid()));
         System.out.println("Size: " + storage.size());
 
         System.out.println("Get dummy: " + storage.get("dummy"));
 
         printAll(storage);
-        storage.delete(r1.getUuid());
+        storage.delete(resume1.getUuid());
         printAll(storage);
         storage.clear();
         printAll(storage);
@@ -54,8 +54,8 @@ public class MainTestArrayStorage {
     static void printAll(Storage storage) {
         System.out.println("\nGet All");
         System.out.println(storage.getClass().getSimpleName() + ": ");
-        for (Resume r : storage.getAll()) {
-            System.out.println(r);
+        for (Resume resume : storage.getAll()) {
+            System.out.println(resume);
         }
     }
 }
