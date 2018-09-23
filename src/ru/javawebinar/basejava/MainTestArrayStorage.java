@@ -2,60 +2,40 @@ package ru.javawebinar.basejava;
 
 import ru.javawebinar.basejava.model.Resume;
 import ru.javawebinar.basejava.storage.ArrayStorage;
-import ru.javawebinar.basejava.storage.SortedArrayStorage;
-import ru.javawebinar.basejava.storage.Storage;
 
-import java.util.Arrays;
-
+/**
+ * Test ru.javawebinar.basejava.storage.ArrayStorage
+ */
 public class MainTestArrayStorage {
     static final ArrayStorage ARRAY_STORAGE = new ArrayStorage();
-    static final SortedArrayStorage SORTED_ARRAY_STORAGE = new SortedArrayStorage();
 
     public static void main(String[] args) {
-        int[] arr = {10, 11, 12, 13, 14, 15, 17, 18, 19, 20};
-        System.out.println(Arrays.binarySearch(arr, 0, 10, 14));
-        System.out.println(Arrays.binarySearch(arr, 0, 10, 10));
-        System.out.println(Arrays.binarySearch(arr, 0, 10, 16));
+        Resume r1 = new Resume("uuid1");
+        Resume r2 = new Resume("uuid2");
+        Resume r3 = new Resume("uuid3");
 
-        testArrayStorage(ARRAY_STORAGE);
-        testArrayStorage(SORTED_ARRAY_STORAGE);
+        ARRAY_STORAGE.save(r1);
+        ARRAY_STORAGE.save(r2);
+        ARRAY_STORAGE.save(r3);
+
+        System.out.println("Get r1: " + ARRAY_STORAGE.get(r1.getUuid()));
+        System.out.println("Size: " + ARRAY_STORAGE.size());
+
+        System.out.println("Get dummy: " + ARRAY_STORAGE.get("dummy"));
+
+        printAll();
+        ARRAY_STORAGE.delete(r1.getUuid());
+        printAll();
+        ARRAY_STORAGE.clear();
+        printAll();
+
+        System.out.println("Size: " + ARRAY_STORAGE.size());
     }
 
-    static void testArrayStorage(Storage storage) {
-        Resume resume1 = new Resume();
-        resume1.setUuid("uuid1");
-        Resume resume2 = new Resume();
-        resume2.setUuid("uuid2");
-        Resume resume3 = new Resume();
-        resume3.setUuid("uuid3");
-        Resume resume4 = new Resume();
-        resume4.setUuid("uuid2");
-
-        storage.save(resume3);
-        storage.save(resume2);
-        storage.update(resume4);
-        storage.save(resume1);
-
-        System.out.println("\n");
-        System.out.println("Get resume1: " + storage.get(resume1.getUuid()));
-        System.out.println("Size: " + storage.size());
-
-        System.out.println("Get dummy: " + storage.get("dummy"));
-
-        printAll(storage);
-        storage.delete(resume1.getUuid());
-        printAll(storage);
-        storage.clear();
-        printAll(storage);
-
-        System.out.println("Size: " + storage.size());
-    }
-
-    static void printAll(Storage storage) {
+    static void printAll() {
         System.out.println("\nGet All");
-        System.out.println(storage.getClass().getSimpleName() + ": ");
-        for (Resume resume : storage.getAll()) {
-            System.out.println(resume);
+        for (Resume r : ARRAY_STORAGE.getAll()) {
+            System.out.println(r);
         }
     }
 }
