@@ -1,6 +1,5 @@
 package ru.javawebinar.basejava.storage;
 
-import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 
@@ -24,15 +23,8 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    public void save(Resume resume) {
-        int index = getIndex(resume.getUuid());
-        if (index >= 0) {
-            throw new ExistStorageException(resume.getUuid());
-        } else if (size == STORAGE_LIMIT) {
-            throw new StorageException("Storage overflow", resume.getUuid());
-        } else {
-            insertElement(resume, index);
-        }
+    protected void updateElement(Resume resume, Object index) {
+        storage[(int) index] = resume;
     }
 
     @Override
@@ -41,29 +33,33 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected void updateElement(Resume resume, int index) {
-        storage[index] = resume;
+    protected void insertElement(Resume resume, Object index) {
+        if (size == STORAGE_LIMIT) {
+            throw new StorageException("Storage overflow", resume.getUuid());
+        } else {
+            doInsertElement(resume, (int) index);
+            size++;
+        }
     }
 
     @Override
-    protected Resume getElement(String uuid, int index) {
-        return storage[index];
-    }
-
-    @Override
-    protected void fillDeletedElement(String uuid, int index) {
-        doDeletedElement(index);
+    protected void deleteElement(String uuid, Object index) {
+        doDeleteElement((int) index);
         storage[size - 1] = null;
         size--;
     }
 
     @Override
-    protected void insertElement(Resume resume, int index) {
-        doInsertElement(resume, index);
-        size++;
+    protected Resume getElement(String uuid, Object index) {
+        return storage[(int) index];
     }
 
-    protected abstract void doDeletedElement(int index);
+    protected abstract void doDeleteElement(int index);
 
     protected abstract void doInsertElement(Resume resume, int index);
+
+    @Override
+    protected boolean isExistElement(Object index) {
+        return ((int) index >= 0);
+    }
 }

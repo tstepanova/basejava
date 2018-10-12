@@ -11,49 +11,48 @@ public abstract class AbstractStorage implements Storage {
     public abstract void clear();
 
     public void update(Resume resume) {
-        int index = getIndex(resume.getUuid());
-        if (index < 0) {
-            throw new NotExistStorageException(resume.getUuid());
-        } else {
-            updateElement(resume, index);
-        }
+        updateElement(resume, getExistElement(resume.getUuid()));
     }
 
     public abstract Resume[] getAll();
 
     public void save(Resume resume) {
-        int index = getIndex(resume.getUuid());
-        if (index >= 0) {
-            throw new ExistStorageException(resume.getUuid());
-        } else {
-            insertElement(resume, index);
-        }
+        insertElement(resume, getNotExistElement(resume.getUuid()));
     }
 
     public void delete(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
-            throw new NotExistStorageException(uuid);
-        } else {
-            fillDeletedElement(uuid, index);
-        }
+        deleteElement(uuid, getExistElement(uuid));
     }
 
     public Resume get(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
-            throw new NotExistStorageException(uuid);
-        }
-        return getElement(uuid, index);
+        return getElement(uuid, getExistElement(uuid));
     }
 
-    protected abstract void fillDeletedElement(String uuid, int index);
+    protected abstract void updateElement(Resume resume, Object index);
 
-    protected abstract void insertElement(Resume resume, int index);
+    protected abstract void insertElement(Resume resume, Object index);
 
-    protected abstract void updateElement(Resume resume, int index);
+    protected abstract void deleteElement(String uuid, Object index);
 
-    protected abstract Resume getElement(String uuid, int index);
+    protected abstract Resume getElement(String uuid, Object index);
 
-    protected abstract int getIndex(String uuid);
+    protected abstract Object getIndex(String uuid);
+
+    protected abstract boolean isExistElement(Object index);
+
+    private Object getExistElement(String uuid) {
+        Object index = getIndex(uuid);
+        if (!isExistElement(index)) {
+            throw new NotExistStorageException(uuid);
+        }
+        return index;
+    }
+
+    private Object getNotExistElement(String uuid) {
+        Object index = getIndex(uuid);
+        if (isExistElement(index)) {
+            throw new ExistStorageException(uuid);
+        }
+        return index;
+    }
 }
