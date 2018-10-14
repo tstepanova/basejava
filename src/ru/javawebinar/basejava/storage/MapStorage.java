@@ -34,12 +34,12 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected void deleteElement(String uuid, Object index) {
+    protected void deleteElement(Object uuid) {
         map.remove(uuid);
     }
 
     @Override
-    protected Resume getElement(String uuid, Object index) {
+    protected Resume getElement(Object uuid) {
         return map.get(uuid);
     }
 

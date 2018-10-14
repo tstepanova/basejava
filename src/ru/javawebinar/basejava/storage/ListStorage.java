@@ -34,13 +34,12 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected void deleteElement(String uuid, Object index) {
-        list.set((int) index, list.get(list.size() - 1));
-        list.remove(list.size() - 1);
+    protected void deleteElement(Object index) {
+        list.remove((int) index);
     }
 
     @Override
-    protected Resume getElement(String uuid, Object index) {
+    protected Resume getElement(Object index) {
         return list.get((int) index);
     }
 

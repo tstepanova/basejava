@@ -6,39 +6,29 @@ import ru.javawebinar.basejava.model.Resume;
 
 public abstract class AbstractStorage implements Storage {
 
-    public abstract int size();
-
-    public abstract void clear();
-
     public void update(Resume resume) {
         updateElement(resume, getExistElement(resume.getUuid()));
     }
 
-    public abstract Resume[] getAll();
+    protected abstract void updateElement(Resume resume, Object index);
 
     public void save(Resume resume) {
         insertElement(resume, getNotExistElement(resume.getUuid()));
     }
 
-    public void delete(String uuid) {
-        deleteElement(uuid, getExistElement(uuid));
-    }
-
-    public Resume get(String uuid) {
-        return getElement(uuid, getExistElement(uuid));
-    }
-
-    protected abstract void updateElement(Resume resume, Object index);
-
     protected abstract void insertElement(Resume resume, Object index);
 
-    protected abstract void deleteElement(String uuid, Object index);
+    public void delete(String uuid) {
+        deleteElement(getExistElement(uuid));
+    }
 
-    protected abstract Resume getElement(String uuid, Object index);
+    protected abstract void deleteElement(Object index);
 
-    protected abstract Object getIndex(String uuid);
+    public Resume get(String uuid) {
+        return getElement(getExistElement(uuid));
+    }
 
-    protected abstract boolean isExistElement(Object index);
+    protected abstract Resume getElement(Object index);
 
     private Object getExistElement(String uuid) {
         Object index = getIndex(uuid);
@@ -55,4 +45,8 @@ public abstract class AbstractStorage implements Storage {
         }
         return index;
     }
+
+    protected abstract Object getIndex(String uuid);
+
+    protected abstract boolean isExistElement(Object index);
 }
