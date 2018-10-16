@@ -7,6 +7,7 @@ import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 import static org.junit.Assert.*;
 
@@ -30,6 +31,8 @@ public abstract class AbstractStorageTest {
         RESUME_4 = new Resume(UUID_4);
         RESUME_ARRAY = new Resume[]{RESUME_1, RESUME_3, RESUME_2};
     }
+
+    private static final Comparator<Resume> RESUME_COMPARATOR = (o1, o2) -> o1.getUuid().compareTo(o2.getUuid());
 
     AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -69,8 +72,8 @@ public abstract class AbstractStorageTest {
     @Test
     public void getAll() throws Exception {
         Resume[] methodResumeArr = storage.getAll();
-        Arrays.sort(RESUME_ARRAY);
-        Arrays.sort(methodResumeArr);
+        Arrays.sort(RESUME_ARRAY, RESUME_COMPARATOR);
+        Arrays.sort(methodResumeArr, RESUME_COMPARATOR);
         assertArrayEquals(RESUME_ARRAY, methodResumeArr);
     }
 
@@ -100,8 +103,8 @@ public abstract class AbstractStorageTest {
     @Test
     public void get() throws Exception {
         Resume[] methodResumeArr = {storage.get(UUID_1), storage.get(UUID_3), storage.get(UUID_2)};
-        Arrays.sort(RESUME_ARRAY);
-        Arrays.sort(methodResumeArr);
+        Arrays.sort(RESUME_ARRAY, RESUME_COMPARATOR);
+        Arrays.sort(methodResumeArr, RESUME_COMPARATOR);
         assertArrayEquals(RESUME_ARRAY, methodResumeArr);
     }
 

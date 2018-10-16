@@ -8,12 +8,10 @@ import java.util.List;
 public class ListStorage extends AbstractStorage {
     private List<Resume> list = new ArrayList<Resume>();
 
-    @Override
     public int size() {
         return list.size();
     }
 
-    @Override
     public void clear() {
         list.clear();
     }
@@ -23,7 +21,6 @@ public class ListStorage extends AbstractStorage {
         list.set((int) index, resume);
     }
 
-    @Override
     public Resume[] getAll() {
         return list.toArray(new Resume[list.size()]);
     }
@@ -44,17 +41,17 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected Object getIndex(String uuid) {
+    protected Object getSearchKey(String uuid) {
         for (int i = 0; i < list.size(); i++) {
             if (uuid.equals(list.get(i).getUuid())) {
                 return i;
             }
         }
-        return -1;
+        return null;
     }
 
     @Override
     protected boolean isExistElement(Object index) {
-        return ((int) index >= 0);
+        return (index != null);
     }
 }

@@ -5,31 +5,28 @@ import ru.javawebinar.basejava.model.Resume;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MapStorage extends AbstractStorage {
+public class MapUuidStorage extends AbstractStorage {
     private Map<String, Resume> map = new HashMap<String, Resume>();
 
-    @Override
     public int size() {
         return map.size();
     }
 
-    @Override
     public void clear() {
         map.clear();
     }
 
     @Override
-    protected void updateElement(Resume resume, Object index) {
+    protected void updateElement(Resume resume, Object uuid) {
         map.put(resume.getUuid(), resume);
     }
 
-    @Override
     public Resume[] getAll() {
         return map.values().toArray(new Resume[map.size()]);
     }
 
     @Override
-    protected void insertElement(Resume resume, Object index) {
+    protected void insertElement(Resume resume, Object uuid) {
         map.put(resume.getUuid(), resume);
     }
 
@@ -44,7 +41,7 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected Object getIndex(String uuid) {
+    protected Object getSearchKey(String uuid) {
         return uuid;
     }
 

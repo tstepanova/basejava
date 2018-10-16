@@ -10,43 +10,43 @@ public abstract class AbstractStorage implements Storage {
         updateElement(resume, getExistElement(resume.getUuid()));
     }
 
-    protected abstract void updateElement(Resume resume, Object index);
+    protected abstract void updateElement(Resume resume, Object searchKey);
 
     public void save(Resume resume) {
         insertElement(resume, getNotExistElement(resume.getUuid()));
     }
 
-    protected abstract void insertElement(Resume resume, Object index);
+    protected abstract void insertElement(Resume resume, Object searchKey);
 
     public void delete(String uuid) {
         deleteElement(getExistElement(uuid));
     }
 
-    protected abstract void deleteElement(Object index);
+    protected abstract void deleteElement(Object searchKey);
 
     public Resume get(String uuid) {
         return getElement(getExistElement(uuid));
     }
 
-    protected abstract Resume getElement(Object index);
+    protected abstract Resume getElement(Object searchKey);
 
     private Object getExistElement(String uuid) {
-        Object index = getIndex(uuid);
-        if (!isExistElement(index)) {
+        Object searchKey = getSearchKey(uuid);
+        if (!isExistElement(searchKey)) {
             throw new NotExistStorageException(uuid);
         }
-        return index;
+        return searchKey;
     }
 
     private Object getNotExistElement(String uuid) {
-        Object index = getIndex(uuid);
-        if (isExistElement(index)) {
+        Object searchKey = getSearchKey(uuid);
+        if (isExistElement(searchKey)) {
             throw new ExistStorageException(uuid);
         }
-        return index;
+        return searchKey;
     }
 
-    protected abstract Object getIndex(String uuid);
+    protected abstract Object getSearchKey(String uuid);
 
-    protected abstract boolean isExistElement(Object index);
+    protected abstract boolean isExistElement(Object searchKey);
 }
