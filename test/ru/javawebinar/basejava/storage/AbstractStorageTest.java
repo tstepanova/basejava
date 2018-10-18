@@ -8,7 +8,9 @@ import ru.javawebinar.basejava.model.Resume;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
 public abstract class AbstractStorageTest {
@@ -23,20 +25,24 @@ public abstract class AbstractStorageTest {
     protected static final Resume RESUME_3;
     protected static final Resume RESUME_4;
     protected static final Resume[] RESUME_ARRAY;
+    protected static final List<Resume> RESUME_LIST;
 
     static {
-        RESUME_1 = new Resume(UUID_1);
-        RESUME_2 = new Resume(UUID_2);
-        RESUME_3 = new Resume(UUID_3);
-        RESUME_4 = new Resume(UUID_4);
+        RESUME_1 = new Resume(UUID_1, "FULLNAME1");
+        RESUME_2 = new Resume(UUID_2, "FULLNAME2");
+        RESUME_3 = new Resume(UUID_3, "FULLNAME2");
+        RESUME_4 = new Resume(UUID_4, "FULLNAME4");
         RESUME_ARRAY = new Resume[]{RESUME_1, RESUME_3, RESUME_2};
-    }
+        RESUME_LIST = Arrays.asList(RESUME_ARRAY);
 
-    private static final Comparator<Resume> RESUME_COMPARATOR = (o1, o2) -> o1.getUuid().compareTo(o2.getUuid());
+    }
 
     AbstractStorageTest(Storage storage) {
         this.storage = storage;
     }
+
+    protected static final Comparator<Resume> RESUME_UUID_COMPARATOR = (o1, o2) -> o1.getUuid().compareTo(o2.getUuid());
+    protected static final Comparator<Resume> RESUME_FULLNAME_COMPARATOR = (o1, o2) -> o1.getFullName().compareTo(o2.getFullName());
 
     @Before
     public void setUp() throws Exception {
@@ -59,7 +65,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void update() throws Exception {
-        Resume resume = new Resume(UUID_2);
+        Resume resume = new Resume(UUID_2, "FULLNAME2");
         storage.update(resume);
         assertEquals(resume, storage.get(UUID_2));
     }
@@ -70,11 +76,10 @@ public abstract class AbstractStorageTest {
     }
 
     @Test
-    public void getAll() throws Exception {
-        Resume[] methodResumeArr = storage.getAll();
-        Arrays.sort(RESUME_ARRAY, RESUME_COMPARATOR);
-        Arrays.sort(methodResumeArr, RESUME_COMPARATOR);
-        assertArrayEquals(RESUME_ARRAY, methodResumeArr);
+    public void getAllSorted() throws Exception {
+        List<Resume> methodResumeList = storage.getAllSorted();
+        RESUME_LIST.sort(RESUME_FULLNAME_COMPARATOR);
+        assertThat(RESUME_LIST, is(methodResumeList));
     }
 
     @Test
@@ -103,8 +108,8 @@ public abstract class AbstractStorageTest {
     @Test
     public void get() throws Exception {
         Resume[] methodResumeArr = {storage.get(UUID_1), storage.get(UUID_3), storage.get(UUID_2)};
-        Arrays.sort(RESUME_ARRAY, RESUME_COMPARATOR);
-        Arrays.sort(methodResumeArr, RESUME_COMPARATOR);
+        Arrays.sort(RESUME_ARRAY, RESUME_UUID_COMPARATOR);
+        Arrays.sort(methodResumeArr, RESUME_UUID_COMPARATOR);
         assertArrayEquals(RESUME_ARRAY, methodResumeArr);
     }
 

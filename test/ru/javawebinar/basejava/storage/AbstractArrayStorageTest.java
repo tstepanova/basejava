@@ -5,7 +5,13 @@ import org.junit.Test;
 import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 
+import java.util.Arrays;
+
+import static org.junit.Assert.assertArrayEquals;
+
 public abstract class AbstractArrayStorageTest extends AbstractStorageTest {
+
+    protected AbstractArrayStorage arrayStorage;
 
     AbstractArrayStorageTest(Storage storage) {
         super(storage);
@@ -22,5 +28,17 @@ public abstract class AbstractArrayStorageTest extends AbstractStorageTest {
             Assert.fail();
         }
         storage.save(new Resume());
+    }
+
+    @Test
+    public void getAllTest() {
+        arrayStorage.clear();
+        arrayStorage.save(RESUME_1);
+        arrayStorage.save(RESUME_2);
+        arrayStorage.save(RESUME_3);
+        Resume[] methodResumeArr = arrayStorage.getAll();
+        Arrays.sort(RESUME_ARRAY, RESUME_UUID_COMPARATOR);
+        Arrays.sort(methodResumeArr, RESUME_UUID_COMPARATOR);
+        assertArrayEquals(RESUME_ARRAY, methodResumeArr);
     }
 }

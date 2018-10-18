@@ -7,19 +7,19 @@ import java.util.Arrays;
 
 import static org.junit.Assert.assertArrayEquals;
 
-public class MapUuidStorageTest extends AbstractStorageTest {
+public class MapResumeStorageTest extends AbstractStorageTest {
 
-    public MapUuidStorageTest() {
-        super(new MapUuidStorage());
+    public MapResumeStorageTest() {
+        super(new MapResumeStorage());
     }
 
     @Test
     public void getAll() {
-        MapUuidStorage mapUuidStorage = new MapUuidStorage();
-        mapUuidStorage.save(RESUME_1);
-        mapUuidStorage.save(RESUME_2);
-        mapUuidStorage.save(RESUME_3);
-        Resume[] methodResumeArr = mapUuidStorage.getAll();
+        MapResumeStorage mapResumeStorage = new MapResumeStorage();
+        mapResumeStorage.save(RESUME_1);
+        mapResumeStorage.save(RESUME_2);
+        mapResumeStorage.save(RESUME_3);
+        Resume[] methodResumeArr = mapResumeStorage.getAll();
         Arrays.sort(RESUME_ARRAY, RESUME_UUID_COMPARATOR);
         Arrays.sort(methodResumeArr, RESUME_UUID_COMPARATOR);
         assertArrayEquals(RESUME_ARRAY, methodResumeArr);
