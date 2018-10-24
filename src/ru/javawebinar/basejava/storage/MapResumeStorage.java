@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MapResumeStorage extends AbstractStorage {
-    private Map<Resume, Resume> map = new HashMap<Resume, Resume>();
+    private Map<String, Resume> map = new HashMap<String, Resume>();
 
     public int size() {
         return map.size();
@@ -19,8 +19,8 @@ public class MapResumeStorage extends AbstractStorage {
     }
 
     @Override
-    protected void updateElement(Resume resume, Object uuid) {
-        map.put(resume, resume);
+    protected void updateElement(Resume resume, Object searchKey) {
+        map.put(resume.getUuid(), resume);
     }
 
     public Resume[] getAll() {
@@ -33,33 +33,28 @@ public class MapResumeStorage extends AbstractStorage {
     }
 
     @Override
-    protected void insertElement(Resume resume, Object uuid) {
-        map.put(resume, resume);
+    protected void insertElement(Resume resume, Object searchKey) {
+        map.put(resume.getUuid(), resume);
     }
 
     @Override
     protected void deleteElement(Object resume) {
-        map.remove(resume);
+        map.remove(((Resume) resume).getUuid());
     }
 
     @Override
     protected Resume getElement(Object resume) {
-        return map.get(resume);
+        return (Resume) resume;
     }
 
     @Override
     protected Resume getSearchKey(String uuid) {
-
-        for (Map.Entry<Resume, Resume> pair : map.entrySet()) {
-            if (pair.getKey().getUuid().equals(uuid)) return pair.getKey();
-        }
-
-        return null;
+        return map.get(uuid);
     }
 
     @Override
     protected boolean isExistElement(Object resume) {
-        return map.containsKey(resume);
+        return resume != null;
     }
 }
 

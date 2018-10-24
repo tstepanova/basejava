@@ -3,7 +3,6 @@ package ru.javawebinar.basejava.storage;
 import ru.javawebinar.basejava.model.Resume;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ListStorage extends AbstractStorage {
@@ -28,7 +27,7 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     public List<Resume> getAllSortedElements() {
-        return list;
+        return new ArrayList<>(list);
     }
 
     @Override

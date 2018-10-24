@@ -2,7 +2,7 @@ package ru.javawebinar.basejava.model;
 
 import java.util.UUID;
 
-public class Resume {//implements Comparable<Resume> {
+public class Resume {
 
     private final String uuid;
     private String fullName;
@@ -44,18 +44,14 @@ public class Resume {//implements Comparable<Resume> {
 
     @Override
     public int hashCode() {
-        return uuid.hashCode();
+        int result = 17;
+        result = 31 * result + uuid.hashCode();
+        result = 31 * result + fullName.hashCode();
+        return result;
     }
 
     @Override
     public String toString() {
-        return uuid;
+        return uuid + '(' + fullName + ')';
     }
-
-    /*
-    @Override
-    public int compareTo(Resume o) {
-        return uuid.compareTo(o.uuid);
-    }
-    */
 }

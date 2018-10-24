@@ -28,8 +28,8 @@ public abstract class AbstractStorageTest {
     protected static final List<Resume> RESUME_LIST;
 
     static {
-        RESUME_1 = new Resume(UUID_1, "FULLNAME1");
-        RESUME_2 = new Resume(UUID_2, "FULLNAME2");
+        RESUME_1 = new Resume(UUID_1, "FULLNAME2");
+        RESUME_2 = new Resume(UUID_2, "FULLNAME1");
         RESUME_3 = new Resume(UUID_3, "FULLNAME2");
         RESUME_4 = new Resume(UUID_4, "FULLNAME4");
         RESUME_ARRAY = new Resume[]{RESUME_1, RESUME_3, RESUME_2};
