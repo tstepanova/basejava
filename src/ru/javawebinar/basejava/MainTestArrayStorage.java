@@ -31,7 +31,7 @@ public class MainTestArrayStorage {
 
     static void printAll() {
         System.out.println("\nGet All");
-        for (Resume resume : ARRAY_STORAGE.getAll()) {
+        for (Resume resume : ARRAY_STORAGE.getAllSorted()) {
             System.out.println(resume);
         }
     }
