@@ -1,17 +1,21 @@
 package ru.javawebinar.basejava.model;
 
-import java.util.UUID;
+import java.util.*;
 
 public class Resume {
 
     private final String uuid;
     private String fullName;
+    private Map<ContactType, Contact> contacts = new EnumMap<ContactType, Contact>(ContactType.class);
+    private Map<SectionType, Section> sections = new EnumMap<SectionType, Section>(SectionType.class);
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
     }
 
     public Resume(String uuid, String fullName) {
+        Objects.requireNonNull(uuid, "uuid must not be null");
+        Objects.requireNonNull(fullName, "fullName must not be null");
         this.uuid = uuid;
         this.fullName = fullName;
     }
@@ -26,6 +30,30 @@ public class Resume {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public void addContact(ContactType contactType, Contact contact) {
+        contacts.put(contactType, contact);
+    }
+
+    public Contact getContact(ContactType contactType) {
+        return contacts.get(contactType);
+    }
+
+    public void deleteContact(ContactType contactType) {
+        contacts.remove(contactType);
+    }
+
+    public void addSection(SectionType sectionType, Section section) {
+        sections.put(sectionType, section);
+    }
+
+    public Section getSection(SectionType sectionType) {
+        return sections.get(sectionType);
+    }
+
+    public void deleteSection(SectionType sectionType) {
+        sections.remove(sectionType);
     }
 
     @Override
@@ -48,6 +76,19 @@ public class Resume {
 
     @Override
     public String toString() {
-        return uuid + '(' + fullName + ')';
+        String res = fullName + "\n\n";
+
+        Iterator<ContactType> itr1 = contacts.keySet().iterator();
+        while (itr1.hasNext()) {
+            res = res + contacts.get(itr1.next()).toString() + '\n';
+        }
+        res = res + '\n';
+        Iterator<SectionType> itr2 = sections.keySet().iterator();
+        while (itr2.hasNext()) {
+            SectionType key = itr2.next();
+            res = res + key.getTitle() + '\n' + sections.get(key).toString() + "\n\n";
+        }
+
+        return res;
     }
 }
