@@ -6,7 +6,7 @@ public class Resume {
 
     private final String uuid;
     private String fullName;
-    private Map<ContactType, Contact> contacts = new EnumMap<ContactType, Contact>(ContactType.class);
+    private Map<ContactType, Link> contacts = new EnumMap<ContactType, Link>(ContactType.class);
     private Map<SectionType, Section> sections = new EnumMap<SectionType, Section>(SectionType.class);
 
     public Resume(String fullName) {
@@ -32,11 +32,11 @@ public class Resume {
         this.fullName = fullName;
     }
 
-    public void addContact(ContactType contactType, Contact contact) {
+    public void addContact(ContactType contactType, Link contact) {
         contacts.put(contactType, contact);
     }
 
-    public Contact getContact(ContactType contactType) {
+    public Link getContact(ContactType contactType) {
         return contacts.get(contactType);
     }
 

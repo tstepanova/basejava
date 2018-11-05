@@ -1,16 +1,16 @@
 package ru.javawebinar.basejava.model;
 
-public class LinkContact extends Contact {
+public class Link {
 
     private String text;
     private String url;
 
-    public LinkContact(String text, String url) {
+    public Link(String text, String url) {
         this.text = text;
         this.url = url;
     }
 
-    public LinkContact(String text) {
+    public Link(String text) {
         this(text, null);
     }
 
@@ -35,7 +35,7 @@ public class LinkContact extends Contact {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        LinkContact link = (LinkContact) o;
+        Link link = (Link) o;
 
         if (url != null ? !url.equals(link.url) : link.url != null) return false;
         return text.equals(link.text);

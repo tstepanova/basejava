@@ -3,16 +3,16 @@ package ru.javawebinar.basejava.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListDateSection extends Section {
+public class OrganizationSection extends Section {
 
-    private List<DateSection> list = new ArrayList<>();
+    private List<Organization> list = new ArrayList<>();
 
-    public List<DateSection> get() {
+    public List<Organization> get() {
         return list;
     }
 
-    public void add(Contact sectionHeader, String startDate, String endDate, String textHeader, String text) {
-        this.list.add(new DateSection(sectionHeader, startDate, endDate, textHeader, text));
+    public void add(Link sectionHeader, String startDate, String endDate, String textHeader, String text) {
+        this.list.add(new Organization(sectionHeader, startDate, endDate, textHeader, text));
     }
 
     @Override
@@ -20,7 +20,7 @@ public class ListDateSection extends Section {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ListDateSection that = (ListDateSection) o;
+        OrganizationSection that = (OrganizationSection) o;
 
         return list.equals(that.list);
     }
@@ -39,15 +39,15 @@ public class ListDateSection extends Section {
         return res;
     }
 
-    private class DateSection extends Section {
+    private class Organization extends Section {
 
-        private Contact sectionHeader;
+        private Link sectionHeader;
         private String startDate;
         private String endDate;
         private String textHeader;
         private String text;
 
-        public DateSection(Contact sectionHeader, String startDate, String endDate, String textHeader, String text) {
+        public Organization(Link sectionHeader, String startDate, String endDate, String textHeader, String text) {
             this.sectionHeader = sectionHeader;
             this.startDate = startDate;
             this.endDate = endDate;
@@ -55,11 +55,11 @@ public class ListDateSection extends Section {
             this.text = text;
         }
 
-        public Contact getSectionHeader() {
+        public Link getSectionHeader() {
             return sectionHeader;
         }
 
-        public void setSectionHeader(Contact sectionHeader) {
+        public void setSectionHeader(Link sectionHeader) {
             this.sectionHeader = sectionHeader;
         }
 
@@ -100,7 +100,7 @@ public class ListDateSection extends Section {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
 
-            DateSection that = (DateSection) o;
+            Organization that = (Organization) o;
 
             if (sectionHeader != null ? !sectionHeader.equals(that.sectionHeader) : that.sectionHeader != null)
                 return false;
