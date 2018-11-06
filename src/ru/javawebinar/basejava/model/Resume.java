@@ -2,12 +2,12 @@ package ru.javawebinar.basejava.model;
 
 import java.util.*;
 
-public class Resume {
+public class Resume implements Comparable<Resume> {
 
     private final String uuid;
     private String fullName;
-    private Map<ContactType, Link> contacts = new EnumMap<ContactType, Link>(ContactType.class);
-    private Map<SectionType, Section> sections = new EnumMap<SectionType, Section>(SectionType.class);
+    private Map<ContactType, Link> contacts = new EnumMap<>(ContactType.class);
+    private Map<SectionType, AbstractSection> sections = new EnumMap<>(SectionType.class);
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -44,11 +44,11 @@ public class Resume {
         contacts.remove(contactType);
     }
 
-    public void addSection(SectionType sectionType, Section section) {
+    public void addSection(SectionType sectionType, AbstractSection section) {
         sections.put(sectionType, section);
     }
 
-    public Section getSection(SectionType sectionType) {
+    public AbstractSection getSection(SectionType sectionType) {
         return sections.get(sectionType);
     }
 
@@ -90,5 +90,11 @@ public class Resume {
         }
 
         return res;
+    }
+
+    @Override
+    public int compareTo(Resume o) {
+        int cmp = fullName.compareTo(o.fullName);
+        return cmp != 0 ? cmp : uuid.compareTo(o.uuid);
     }
 }

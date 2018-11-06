@@ -1,6 +1,6 @@
 package ru.javawebinar.basejava.model;
 
-public class TextSection extends Section {
+public class TextSection extends AbstractSection {
 
     private String text;
 

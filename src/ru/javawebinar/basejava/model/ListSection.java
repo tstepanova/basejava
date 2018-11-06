@@ -3,7 +3,7 @@ package ru.javawebinar.basejava.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListSection extends Section {
+public class ListSection extends AbstractSection {
 
     private List<String> list = new ArrayList<>();
 
@@ -11,11 +11,11 @@ public class ListSection extends Section {
         this.list = list;
     }
 
-    public List<String> get() {
+    public List<String> getList() {
         return list;
     }
 
-    public void add(String text) {
+    public void setList(String text) {
         this.list.add(text);
     }
 

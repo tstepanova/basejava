@@ -3,27 +3,28 @@ package ru.javawebinar.basejava.storage;
 import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
+
 import java.util.logging.Logger;
 
 import java.util.Comparator;
 import java.util.List;
 
 public abstract class AbstractStorage<SK> implements Storage {
-    
-	private static final Logger LOG = Logger.getLogger(AbstractStorage.class.getName());
+
+    private static final Logger LOG = Logger.getLogger(AbstractStorage.class.getName());
+    private static final Comparator<Resume> RESUME_COMPARATOR = Comparator.comparing(Resume::getFullName).thenComparing(Resume::getUuid);
 
     public void update(Resume resume) {
-		LOG.info("Update " + resume);
+        LOG.info("Update " + resume);
         updateElement(resume, getExistElement(resume.getUuid()));
     }
 
     protected abstract void updateElement(Resume resume, SK searchKey);
 
     public List<Resume> getAllSorted() {
-		LOG.info("getAllSorted");
+        LOG.info("getAllSorted");
         List<Resume> list = getAllSortedElements();
-        Comparator<Resume> resumeComparator = Comparator.comparing(Resume::getFullName).thenComparing(Resume::getUuid);
-        list.sort(resumeComparator);
+        list.sort(RESUME_COMPARATOR);
         return list;
     }
 
@@ -31,20 +32,20 @@ public abstract class AbstractStorage<SK> implements Storage {
 
     public void save(Resume resume) {
         LOG.info("Save " + resume);
-		insertElement(resume, getNotExistElement(resume.getUuid()));
+        insertElement(resume, getNotExistElement(resume.getUuid()));
     }
 
     protected abstract void insertElement(Resume resume, SK searchKey);
 
     public void delete(String uuid) {
-		LOG.info("Delete " + uuid);
+        LOG.info("Delete " + uuid);
         deleteElement(getExistElement(uuid));
     }
 
     protected abstract void deleteElement(SK searchKey);
 
     public Resume get(String uuid) {
-		LOG.info("Get " + uuid);
+        LOG.info("Get " + uuid);
         return getElement(getExistElement(uuid));
     }
 
@@ -53,7 +54,7 @@ public abstract class AbstractStorage<SK> implements Storage {
     private SK getExistElement(String uuid) {
         SK searchKey = getSearchKey(uuid);
         if (!isExistElement(searchKey)) {
-			LOG.warning("Resume " + uuid + " not exist");
+            LOG.warning("Resume " + uuid + " not exist");
             throw new NotExistStorageException(uuid);
         }
         return searchKey;
@@ -62,7 +63,7 @@ public abstract class AbstractStorage<SK> implements Storage {
     private SK getNotExistElement(String uuid) {
         SK searchKey = getSearchKey(uuid);
         if (isExistElement(searchKey)) {
-			LOG.warning("Resume " + uuid + " already exist");
+            LOG.warning("Resume " + uuid + " already exist");
             throw new ExistStorageException(uuid);
         }
         return searchKey;

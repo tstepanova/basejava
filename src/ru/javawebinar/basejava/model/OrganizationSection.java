@@ -3,15 +3,15 @@ package ru.javawebinar.basejava.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrganizationSection extends Section {
+public class OrganizationSection extends AbstractSection {
 
     private List<Organization> list = new ArrayList<>();
 
-    public List<Organization> get() {
+    public List<Organization> getList() {
         return list;
     }
 
-    public void add(Link sectionHeader, String startDate, String endDate, String textHeader, String text) {
+    public void setList(Link sectionHeader, String startDate, String endDate, String textHeader, String text) {
         this.list.add(new Organization(sectionHeader, startDate, endDate, textHeader, text));
     }
 
@@ -39,7 +39,7 @@ public class OrganizationSection extends Section {
         return res;
     }
 
-    private class Organization extends Section {
+    private class Organization extends AbstractSection {
 
         private Link sectionHeader;
         private String startDate;
