@@ -2,6 +2,7 @@ package ru.javawebinar.basejava.storage;
 
 import org.junit.Before;
 import org.junit.Test;
+import ru.javawebinar.basejava.ResumeTestData;
 import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
@@ -30,6 +31,10 @@ public abstract class AbstractStorageTest {
         RESUME_2 = new Resume(UUID_2, "FULLNAME2");
         RESUME_3 = new Resume(UUID_3, "FULLNAME3");
         RESUME_4 = new Resume(UUID_4, "FULLNAME4");
+        ResumeTestData.addInfo(RESUME_1);
+        ResumeTestData.addInfo(RESUME_2);
+        ResumeTestData.addInfo(RESUME_3);
+        ResumeTestData.addInfo(RESUME_4);
         RESUME_ARRAY = new Resume[]{RESUME_1, RESUME_2, RESUME_3};
         RESUME_LIST = Arrays.asList(RESUME_ARRAY);
 

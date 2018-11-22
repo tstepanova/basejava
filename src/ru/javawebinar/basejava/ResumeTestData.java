@@ -4,7 +4,6 @@ import ru.javawebinar.basejava.model.*;
 import ru.javawebinar.basejava.util.DateUtil;
 
 import java.time.Month;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -14,7 +13,11 @@ public class ResumeTestData {
 
     public static void main(String[] args) {
         Resume resume = new Resume("Григорий Кислин");
+        addInfo(resume);
+        LOG.info('\n' + resume.toString());
+    }
 
+    public static void addInfo(Resume resume) {
         resume.addContact(ContactType.PHONE, new Link("+7(921) 855-0482"));
         resume.addContact(ContactType.SKYPE, new Link("grigory.kislin", "skype:grigory.kislin"));
         resume.addContact(ContactType.EMAIL, new Link("gkislin@yandex.ru", "mailto:gkislin@yandex.ru"));
@@ -73,7 +76,5 @@ public class ResumeTestData {
         educationSection.setList(null, DateUtil.of(1987, Month.SEPTEMBER), DateUtil.of(1993, Month.JULY), "Инженер (программист Fortran, C)", "");
         educationSection.setList(new Link("Заочная физико-техническая школа при МФТИ", "http://www.school.mipt.ru/"), DateUtil.of(1984, Month.SEPTEMBER), DateUtil.of(1987, Month.JUNE), "Закончил с отличием", "");
         resume.addSection(SectionType.EDUCATION, educationSection);
-
-        LOG.info('\n' + resume.toString());
     }
 }

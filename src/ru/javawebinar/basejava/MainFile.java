@@ -19,19 +19,33 @@ public class MainFile {
             throw new RuntimeException("Error", e);
         }
 
-        File dir = new File("./src/ru/javawebinar/basejava");
-        System.out.println(dir.isDirectory());
-        String[] list = dir.list();
-        if (list != null) {
-            for (String name : list) {
-                System.out.println(name);
-            }
-        }
+        printTreeFiles("./src/ru/javawebinar/basejava");
 
         try (FileInputStream fis = new FileInputStream(filePath)) {
             System.out.println(fis.read());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+    }
+
+    static String tab = "";
+
+    public static void printTreeFiles(String pathName) {
+        System.out.println(tab + pathName + ":");
+        tab = tab + "    ";
+        File dir = new File(pathName);
+        String[] list = dir.list();
+        if (list != null) {
+            for (String name : list) {
+                dir = new File(pathName + "/" + name);
+                if (dir.isDirectory()) {
+                    printTreeFiles(pathName + "/" + name);
+                } else {
+                    System.out.println(tab + "- " + name);
+                }
+            }
+        }
+        tab = "    ";
     }
 }
