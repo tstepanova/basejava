@@ -1,7 +1,10 @@
 package ru.javawebinar.basejava;
 
 import ru.javawebinar.basejava.model.*;
+import ru.javawebinar.basejava.util.DateUtil;
 
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -51,24 +54,24 @@ public class ResumeTestData {
         resume.addSection(SectionType.QUALIFICATIONS, new ListSection(qualificationsList));
 
         OrganizationSection experienceSection = new OrganizationSection();
-        experienceSection.setList(new Link("Java Online Projects", "http://javaops.ru/"), "10/2013", null, "Автор проекта.", "Создание, организация и проведение Java онлайн проектов и стажировок.");
-        experienceSection.setList(new Link("Wrike", "https://www.wrike.com/"), "10/2014", "01/2016", "Старший разработчик (backend)", "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO.");
-        experienceSection.setList(new Link("RIT Center"), "04/2012", "10/2014", "Java архитектор", "Организация процесса разработки системы ERP для разных окружений: релизная политика, версионирование, ведение CI (Jenkins), миграция базы (кастомизация Flyway), конфигурирование системы (pgBoucer, Nginx), AAA via SSO. Архитектура БД и серверной части системы. Разработка интергационных сервисов: CMIS, BPMN2, 1C (WebServices), сервисов общего назначения (почта, экспорт в pdf, doc, html). Интеграция Alfresco JLAN для online редактирование из браузера документов MS Office. Maven + plugin development, Ant, Apache Commons, Spring security, Spring MVC, Tomcat,WSO2, xcmis, OpenCmis, Bonita, Python scripting, Unix shell remote scripting via ssh tunnels, PL/Python");
-        experienceSection.setList(new Link("Luxoft (Deutsche Bank)", "http://www.luxoft.ru/"), "12/2010", "04/2012", "Ведущий программист", "Участие в проекте Deutsche Bank CRM (WebLogic, Hibernate, Spring, Spring MVC, SmartGWT, GWT, Jasper, Oracle). Реализация клиентской и серверной части CRM. Реализация RIA-приложения для администрирования, мониторинга и анализа результатов в области алгоритмического трейдинга. JPA, Spring, Spring-MVC, GWT, ExtGWT (GXT), Highstock, Commet, HTML5.");
-        experienceSection.setList(new Link("Yota", "https://www.yota.ru/"), "06/2008", "12/2010", "Ведущий специалист", "Дизайн и имплементация Java EE фреймворка для отдела \"Платежные Системы\" (GlassFish v2.1, v3, OC4J, EJB3, JAX-WS RI 2.1, Servlet 2.4, JSP, JMX, JMS, Maven2). Реализация администрирования, статистики и мониторинга фреймворка. Разработка online JMX клиента (Python/ Jython, Django, ExtJS)");
-        experienceSection.setList(new Link("Enkata", "http://enkata.com/"), "03/2007", "06/2008", "Разработчик ПО", "Реализация клиентской (Eclipse RCP) и серверной (JBoss 4.2, Hibernate 3.0, Tomcat, JMS) частей кластерного J2EE приложения (OLAP, Data mining).");
-        experienceSection.setList(new Link("Siemens AG", "https://www.siemens.com/ru/ru/home.html"), "01/2005", "02/2007", "Разработчик ПО", "Разработка информационной модели, проектирование интерфейсов, реализация и отладка ПО на мобильной IN платформе Siemens @vantage (Java, Unix).");
-        experienceSection.setList(new Link("Alcatel", "http://www.alcatel.ru/"), "09/1997", "01/2005", "Инженер по аппаратному и программному тестированию", "Тестирование, отладка, внедрение ПО цифровой телефонной станции Alcatel 1000 S12 (CHILL, ASM).");
+        experienceSection.setList(new Link("Java Online Projects", "http://javaops.ru/"), DateUtil.of(2013, Month.OCTOBER), null, "Автор проекта.", "Создание, организация и проведение Java онлайн проектов и стажировок.");
+        experienceSection.setList(new Link("Wrike", "https://www.wrike.com/"), DateUtil.of(2014, Month.OCTOBER), DateUtil.of(2016, Month.JANUARY), "Старший разработчик (backend)", "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO.");
+        experienceSection.setList(new Link("RIT Center"), DateUtil.of(2012, Month.APRIL), DateUtil.of(2014, Month.OCTOBER), "Java архитектор", "Организация процесса разработки системы ERP для разных окружений: релизная политика, версионирование, ведение CI (Jenkins), миграция базы (кастомизация Flyway), конфигурирование системы (pgBoucer, Nginx), AAA via SSO. Архитектура БД и серверной части системы. Разработка интергационных сервисов: CMIS, BPMN2, 1C (WebServices), сервисов общего назначения (почта, экспорт в pdf, doc, html). Интеграция Alfresco JLAN для online редактирование из браузера документов MS Office. Maven + plugin development, Ant, Apache Commons, Spring security, Spring MVC, Tomcat,WSO2, xcmis, OpenCmis, Bonita, Python scripting, Unix shell remote scripting via ssh tunnels, PL/Python");
+        experienceSection.setList(new Link("Luxoft (Deutsche Bank)", "http://www.luxoft.ru/"), DateUtil.of(2010, Month.DECEMBER), DateUtil.of(2012, Month.APRIL), "Ведущий программист", "Участие в проекте Deutsche Bank CRM (WebLogic, Hibernate, Spring, Spring MVC, SmartGWT, GWT, Jasper, Oracle). Реализация клиентской и серверной части CRM. Реализация RIA-приложения для администрирования, мониторинга и анализа результатов в области алгоритмического трейдинга. JPA, Spring, Spring-MVC, GWT, ExtGWT (GXT), Highstock, Commet, HTML5.");
+        experienceSection.setList(new Link("Yota", "https://www.yota.ru/"), DateUtil.of(2008, Month.JUNE), DateUtil.of(2010, Month.DECEMBER), "Ведущий специалист", "Дизайн и имплементация Java EE фреймворка для отдела \"Платежные Системы\" (GlassFish v2.1, v3, OC4J, EJB3, JAX-WS RI 2.1, Servlet 2.4, JSP, JMX, JMS, Maven2). Реализация администрирования, статистики и мониторинга фреймворка. Разработка online JMX клиента (Python/ Jython, Django, ExtJS)");
+        experienceSection.setList(new Link("Enkata", "http://enkata.com/"), DateUtil.of(2007, Month.MARCH), DateUtil.of(2008, Month.JUNE), "Разработчик ПО", "Реализация клиентской (Eclipse RCP) и серверной (JBoss 4.2, Hibernate 3.0, Tomcat, JMS) частей кластерного J2EE приложения (OLAP, Data mining).");
+        experienceSection.setList(new Link("Siemens AG", "https://www.siemens.com/ru/ru/home.html"), DateUtil.of(2005, Month.JANUARY), DateUtil.of(2007, Month.FEBRUARY), "Разработчик ПО", "Разработка информационной модели, проектирование интерфейсов, реализация и отладка ПО на мобильной IN платформе Siemens @vantage (Java, Unix).");
+        experienceSection.setList(new Link("Alcatel", "http://www.alcatel.ru/"), DateUtil.of(1997, Month.SEPTEMBER), DateUtil.of(2005, Month.JANUARY), "Инженер по аппаратному и программному тестированию", "Тестирование, отладка, внедрение ПО цифровой телефонной станции Alcatel 1000 S12 (CHILL, ASM).");
         resume.addSection(SectionType.EXPERIENCE, experienceSection);
 
         OrganizationSection educationSection = new OrganizationSection();
-        educationSection.setList(new Link("Coursera", "https://www.coursera.org/course/progfun"), "03/2013", "05/2013", "\"Functional Programming Principles in Scala\" by Martin Odersky", null);
-        educationSection.setList(new Link("Luxoft", "http://www.luxoft-training.ru/training/catalog/course.html?ID=22366"), "03/2011", "04/2011", "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"", "");
-        educationSection.setList(new Link("Siemens AG", "http://www.siemens.ru/"), "01/2005", "04/2005", "3 месяца обучения мобильным IN сетям (Берлин)", "");
-        educationSection.setList(new Link("Alcatel", "http://www.alcatel.ru/"), "09/1997", "03/1998", "6 месяцев обучения цифровым телефонным сетям (Москва)", "");
-        educationSection.setList(new Link("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", "http://www.ifmo.ru/"), "09/1993", "07/1996", "Аспирантура (программист С, С++)", "");
-        educationSection.setList(null, "09/1987", "07/1993", "Инженер (программист Fortran, C)", "");
-        educationSection.setList(new Link("Заочная физико-техническая школа при МФТИ", "http://www.school.mipt.ru/"), "09/1984", "06/1987", "Закончил с отличием", "");
+        educationSection.setList(new Link("Coursera", "https://www.coursera.org/course/progfun"), DateUtil.of(2013, Month.MARCH), DateUtil.of(2013, Month.MAY), "\"Functional Programming Principles in Scala\" by Martin Odersky", null);
+        educationSection.setList(new Link("Luxoft", "http://www.luxoft-training.ru/training/catalog/course.html?ID=22366"), DateUtil.of(2011, Month.MARCH), DateUtil.of(2011, Month.APRIL), "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"", "");
+        educationSection.setList(new Link("Siemens AG", "http://www.siemens.ru/"), DateUtil.of(2005, Month.JANUARY), DateUtil.of(2005, Month.APRIL), "3 месяца обучения мобильным IN сетям (Берлин)", "");
+        educationSection.setList(new Link("Alcatel", "http://www.alcatel.ru/"), DateUtil.of(1997, Month.SEPTEMBER), DateUtil.of(1998, Month.MARCH), "6 месяцев обучения цифровым телефонным сетям (Москва)", "");
+        educationSection.setList(new Link("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", "http://www.ifmo.ru/"), DateUtil.of(1993, Month.SEPTEMBER), DateUtil.of(1996, Month.JULY), "Аспирантура (программист С, С++)", "");
+        educationSection.setList(null, DateUtil.of(1987, Month.SEPTEMBER), DateUtil.of(1993, Month.JULY), "Инженер (программист Fortran, C)", "");
+        educationSection.setList(new Link("Заочная физико-техническая школа при МФТИ", "http://www.school.mipt.ru/"), DateUtil.of(1984, Month.SEPTEMBER), DateUtil.of(1987, Month.JUNE), "Закончил с отличием", "");
         resume.addSection(SectionType.EDUCATION, educationSection);
 
         LOG.info('\n' + resume.toString());

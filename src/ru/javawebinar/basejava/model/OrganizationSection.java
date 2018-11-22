@@ -1,7 +1,12 @@
 package ru.javawebinar.basejava.model;
 
+import ru.javawebinar.basejava.util.DateUtil;
+
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDate;
 
 public class OrganizationSection extends AbstractSection {
 
@@ -11,7 +16,7 @@ public class OrganizationSection extends AbstractSection {
         return list;
     }
 
-    public void setList(Link sectionHeader, String startDate, String endDate, String textHeader, String text) {
+    public void setList(Link sectionHeader, LocalDate startDate, LocalDate endDate, String textHeader, String text) {
         this.list.add(new Organization(sectionHeader, startDate, endDate, textHeader, text));
     }
 
@@ -41,13 +46,14 @@ public class OrganizationSection extends AbstractSection {
 
     private class Organization extends AbstractSection {
 
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/YYYY");
         private Link sectionHeader;
-        private String startDate;
-        private String endDate;
+        private LocalDate startDate;
+        private LocalDate endDate;
         private String textHeader;
         private String text;
 
-        public Organization(Link sectionHeader, String startDate, String endDate, String textHeader, String text) {
+        public Organization(Link sectionHeader, LocalDate startDate, LocalDate endDate, String textHeader, String text) {
             this.sectionHeader = sectionHeader;
             this.startDate = startDate;
             this.endDate = endDate;
@@ -63,19 +69,19 @@ public class OrganizationSection extends AbstractSection {
             this.sectionHeader = sectionHeader;
         }
 
-        public String getStartDate() {
+        public LocalDate getStartDate() {
             return startDate;
         }
 
-        public void setStartDate(String startDate) {
+        public void setStartDate(LocalDate startDate) {
             this.startDate = startDate;
         }
 
-        public String getEndDate() {
+        public LocalDate getEndDate() {
             return endDate;
         }
 
-        public void setEndDate(String endDate) {
+        public void setEndDate(LocalDate endDate) {
             this.endDate = endDate;
         }
 
@@ -123,8 +129,8 @@ public class OrganizationSection extends AbstractSection {
         @Override
         public String toString() {
             return (sectionHeader != null ? sectionHeader.toString() + '\n' : "") +
-                    startDate + " - " +
-                    (endDate != null && !endDate.isEmpty() ? endDate : "Сейчас") + '\t' +
+                    dtf.format(startDate) + " - " +
+                    (endDate != null ? dtf.format(endDate) : "Сейчас") + '\t' +
                     textHeader +
                     (text != null && !text.isEmpty() ? "\n\t\t\t\t\t" + text : "");
         }
