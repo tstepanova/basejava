@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListStorage extends AbstractStorage<Integer> {
-    private List<Resume> list = new ArrayList<Resume>();
+    private List<Resume> list = new ArrayList<>();
 
     public int size() {
         return list.size();
@@ -18,7 +18,7 @@ public class ListStorage extends AbstractStorage<Integer> {
 
     @Override
     protected void updateElement(Resume resume, Integer index) {
-        list.set((int) index, resume);
+        list.set(index, resume);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class ListStorage extends AbstractStorage<Integer> {
 
     @Override
     protected Resume getElement(Integer index) {
-        return list.get((int) index);
+        return list.get(index);
     }
 
     @Override

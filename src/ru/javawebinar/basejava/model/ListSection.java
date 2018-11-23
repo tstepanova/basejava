@@ -1,11 +1,10 @@
 package ru.javawebinar.basejava.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ListSection extends AbstractSection {
 
-    private List<String> list = new ArrayList<>();
+    private List<String> list;
 
     public ListSection(List<String> list) {
         this.list = list;

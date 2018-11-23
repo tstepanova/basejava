@@ -1,12 +1,9 @@
 package ru.javawebinar.basejava.model;
 
-import ru.javawebinar.basejava.util.DateUtil;
-
-import java.time.Month;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.time.LocalDate;
 
 public class OrganizationSection extends AbstractSection {
 
