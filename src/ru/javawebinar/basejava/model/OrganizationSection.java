@@ -1,11 +1,14 @@
 package ru.javawebinar.basejava.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class OrganizationSection extends AbstractSection {
+
+    private static final long serialVersionUID = 1L;
 
     private List<Organization> list = new ArrayList<>();
 
@@ -41,7 +44,9 @@ public class OrganizationSection extends AbstractSection {
         return res;
     }
 
-    private class Organization extends AbstractSection {
+    private class Organization extends AbstractSection implements Serializable {
+
+        private static final long serialVersionUID = 1L;
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/YYYY");
         private Link sectionHeader;

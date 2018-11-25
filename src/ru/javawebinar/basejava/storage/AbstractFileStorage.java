@@ -3,8 +3,7 @@ package ru.javawebinar.basejava.storage;
 import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -54,13 +53,13 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected void updateElement(Resume resume, File file) {
         try {
-            doUpdateElement(resume, file);
+            doUpdateElement(resume, new BufferedOutputStream(new FileOutputStream(file)));
         } catch (IOException e) {
             throw new StorageException("Error write file", file.getName(), e);
         }
     }
 
-    protected abstract void doUpdateElement(Resume resume, File file) throws IOException;
+    protected abstract void doUpdateElement(Resume resume, OutputStream os) throws IOException;;
 
     @Override
     protected List<Resume> getAllSortedElements() {
@@ -83,13 +82,12 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     protected void insertElement(Resume resume, File file) {
         try {
             file.createNewFile();
-            doInsertElement(resume, file);
         } catch (IOException e) {
             throw new StorageException("Error create file", file.getName(), e);
         }
+		updateElement(resume, file);
     }
 
-    protected abstract void doInsertElement(Resume resume, File file);
 
     @Override
     protected void deleteElement(File file) {
@@ -101,13 +99,13 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected Resume getElement(File file) {
         try {
-            return doGetElement(file);
+            return doGetElement(new BufferedInputStream(new FileInputStream(file)));
         } catch (IOException e) {
             throw new StorageException("Error read file", file.getName(), e);
         }
     }
 
-    protected abstract Resume doGetElement(File file) throws IOException;
+    protected abstract Resume doGetElement(InputStream is) throws IOException;
 
     @Override
     protected File getSearchKey(String uuid) {

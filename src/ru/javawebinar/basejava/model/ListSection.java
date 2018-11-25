@@ -4,6 +4,8 @@ import java.util.List;
 
 public class ListSection extends AbstractSection {
 
+    private static final long serialVersionUID = 1L;
+
     private List<String> list;
 
     public ListSection(List<String> list) {
