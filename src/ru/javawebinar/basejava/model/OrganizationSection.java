@@ -48,7 +48,6 @@ public class OrganizationSection extends AbstractSection {
 
         private static final long serialVersionUID = 1L;
 
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/YYYY");
         private Link sectionHeader;
         private LocalDate startDate;
         private LocalDate endDate;
@@ -131,8 +130,8 @@ public class OrganizationSection extends AbstractSection {
         @Override
         public String toString() {
             return (sectionHeader != null ? sectionHeader.toString() + '\n' : "") +
-                    dtf.format(startDate) + " - " +
-                    (endDate != null ? dtf.format(endDate) : "Сейчас") + '\t' +
+                    DateTimeFormatter.ofPattern("MM/YYYY").format(startDate) + " - " +
+                    (endDate != null ? DateTimeFormatter.ofPattern("MM/YYYY").format(endDate) : "Сейчас") + '\t' +
                     textHeader +
                     (text != null && !text.isEmpty() ? "\n\t\t\t\t\t" + text : "");
         }

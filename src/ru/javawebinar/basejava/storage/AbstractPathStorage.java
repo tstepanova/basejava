@@ -3,7 +3,9 @@ package ru.javawebinar.basejava.storage;
 import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,70 +25,75 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
     }
 
     @Override
+    public int size() {
+        try {
+            return (int) Files.list(directory).count();
+        } catch (IOException e) {
+            throw new StorageException("Error read directory", directory.toString(), e);
+        }
+    }
+
+    @Override
     public void clear() {
         try {
             Files.list(directory).forEach(this::deleteElement);
         } catch (IOException e) {
-            throw new StorageException("Path delete error", null);
+            throw new StorageException("Error delete directory", directory.toString());
         }
     }
 
     @Override
-    public int size() {
-        String[] list = directory.list();
-        if (list == null) {
-            throw new StorageException("Directory read error", null);
-        }
-        return list.length;
-    }
-
-    @Override
-    protected void updateElement(Resume resume, Path path) {
+    protected void updateElement(Resume resume, Path file) {
         try {
-            doUpdateElement(resume, new BufferedOutputStream(new PathOutputStream(path)));
+            doUpdateElement(resume, Files.newOutputStream(file));
         } catch (IOException e) {
-            throw new StorageException("Path write error", resume.getUuid(), e);
+            throw new StorageException("Error write file", file.toString(), e);
         }
     }
 
     protected abstract void doUpdateElement(Resume resume, OutputStream os) throws IOException;
 
+
     @Override
     protected List<Resume> getAllSortedElements() {
-        Path[] Paths = directory.listPaths();
-        if (Paths == null) {
-            throw new StorageException("Directory read error", null);
-        }
-        List<Resume> list = new ArrayList<>(Paths.length);
-        for (Path path : Paths) {
-            list.add(getElement(path));
+        List<Resume> list = new ArrayList<>(size());
+        try {
+            Files.list(directory).filter(Files::isRegularFile).sorted().forEach(file -> {
+                list.add(getElement(file));
+            });
+        } catch (IOException e) {
+            throw new StorageException("Error read directory", directory.toString(), e);
         }
         return list;
     }
 
     @Override
-    protected void insertElement(Resume resume, Path path) {
+    protected void insertElement(Resume resume, Path file) {
         try {
-            path.createNewPath();
+            if (!Files.exists(file)) Files.createFile(file);
         } catch (IOException e) {
-            throw new StorageException("Couldn't create Path " + path.getAbsolutePath(), path.getName(), e);
+            throw new StorageException("Error create file", file.toString(), e);
         }
-        updateElement(resume, path);
+        updateElement(resume, file);
     }
 
     @Override
-    protected void deleteElement(Path path) {
-        if (!path.delete()) {
-            throw new StorageException("Path delete error", path.getName());
+    protected void deleteElement(Path file) {
+        if (Files.exists(file)) {
+            try {
+                Files.delete(file);
+            } catch (IOException e) {
+                throw new StorageException("Error delete file", file.toString(), e);
+            }
         }
     }
 
     @Override
-    protected Resume getElement(Path path) {
+    protected Resume getElement(Path file) {
         try {
-            return doGetElement(new BufferedInputStream(new PathInputStream(path)));
+            return doGetElement(Files.newInputStream(file));
         } catch (IOException e) {
-            throw new StorageException("Path read error", path.getName(), e);
+            throw new StorageException("Error read file", file.toString(), e);
         }
     }
 
@@ -94,11 +101,11 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
 
     @Override
     protected Path getSearchKey(String uuid) {
-        return new Path(directory, uuid);
+        return directory.resolve(uuid);
     }
 
     @Override
-    protected boolean isExistElement(Path path) {
-        return path.exists();
+    protected boolean isExistElement(Path file) {
+        return Files.exists(file);
     }
 }
