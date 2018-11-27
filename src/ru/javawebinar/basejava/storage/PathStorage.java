@@ -2,10 +2,9 @@ package ru.javawebinar.basejava.storage;
 
 import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
+import ru.javawebinar.basejava.storage.serialization.SerializationStrategy;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,11 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class AbstractPathStorage extends AbstractStorage<Path> {
+public class PathStorage extends AbstractStorage<Path> {
     private Path directory;
+    private SerializationStrategy strategy;
 
-    protected AbstractPathStorage(String dir) {
+    protected PathStorage(String dir, SerializationStrategy strategy) {
         directory = Paths.get(dir);
+        this.strategy = strategy;
         Objects.requireNonNull(directory, "directory must not be null");
         if (!Files.isDirectory(directory) || !Files.isWritable(directory)) {
             throw new IllegalArgumentException(dir + " is not directory or is not writable");
@@ -45,13 +46,11 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
     @Override
     protected void updateElement(Resume resume, Path file) {
         try {
-            doUpdateElement(resume, Files.newOutputStream(file));
+            strategy.doUpdateElement(resume, Files.newOutputStream(file));
         } catch (IOException e) {
             throw new StorageException("Error write file", file.toString(), e);
         }
     }
-
-    protected abstract void doUpdateElement(Resume resume, OutputStream os) throws IOException;
 
 
     @Override
@@ -91,13 +90,11 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
     @Override
     protected Resume getElement(Path file) {
         try {
-            return doGetElement(Files.newInputStream(file));
+            return strategy.doGetElement(Files.newInputStream(file));
         } catch (IOException e) {
             throw new StorageException("Error read file", file.toString(), e);
         }
     }
-
-    protected abstract Resume doGetElement(InputStream is) throws IOException;
 
     @Override
     protected Path getSearchKey(String uuid) {
