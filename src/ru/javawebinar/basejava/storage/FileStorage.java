@@ -27,18 +27,18 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     public int size() {
-        int n = 0;
+        int cntFiles = 0;
         File[] files = directory.listFiles();
         if (files == null) {
             throw new StorageException("Directory is not exist", directory.getAbsolutePath());
         } else {
             for (File file : files) {
                 if (file.isFile()) {
-                    n++;
+                    cntFiles++;
                 }
             }
         }
-        return n;
+        return cntFiles;
     }
 
     @Override

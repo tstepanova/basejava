@@ -8,7 +8,7 @@ import java.io.OutputStream;
 
 public interface SerializationStrategy {
 
-    public void doUpdateElement(Resume r, OutputStream os) throws IOException;
+    void doUpdateElement(Resume r, OutputStream os) throws IOException;
 
-    public Resume doGetElement(InputStream is) throws IOException;
+    Resume doGetElement(InputStream is) throws IOException;
 }

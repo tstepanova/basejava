@@ -19,7 +19,7 @@ public class MainFile {
             throw new RuntimeException("Error", e);
         }
 
-        printTreeFiles(new File("./src/ru/javawebinar/basejava"),"");
+        printTreeFiles(new File("./src/ru/javawebinar/basejava"), "");
 
         try (FileInputStream fis = new FileInputStream(filePath)) {
             System.out.println(fis.read());
@@ -31,14 +31,14 @@ public class MainFile {
 
     public static void printTreeFiles(File dir, String tab) {
         String[] list = dir.list();
-        System.out.println(tab+"Directory:  " + dir.getName());
+        System.out.println(tab + "Directory:  " + dir.getName());
         if (list != null) {
             for (String name : list) {
                 File subdir = new File(dir.getAbsolutePath() + "/" + name);
                 if (subdir.isDirectory()) {
                     printTreeFiles(subdir, tab + "    ");
                 } else {
-                    System.out.println(tab+"    File:  " + name);
+                    System.out.println(tab + "    File:  " + name);
                 }
             }
         }
