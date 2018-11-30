@@ -81,6 +81,9 @@ public class Organization extends AbstractSection implements Serializable {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static class Position implements Serializable {
+
+        private static final String PATTERN = "MM/yyyy";
+
         @XmlJavaTypeAdapter(LocalDateAdapter.class)
         private LocalDate startDate;
         @XmlJavaTypeAdapter(LocalDateAdapter.class)
@@ -107,6 +110,10 @@ public class Organization extends AbstractSection implements Serializable {
             this.endDate = endDate;
             this.textHeader = textHeader;
             this.text = text;
+        }
+
+        public static String getPattern() {
+            return PATTERN;
         }
 
         public LocalDate getStartDate() {
@@ -166,7 +173,7 @@ public class Organization extends AbstractSection implements Serializable {
 
         @Override
         public String toString() {
-            return DateTimeFormatter.ofPattern("MM/YYYY").format(startDate) + " - " + DateTimeFormatter.ofPattern("MM/YYYY").format(endDate) + '\t' + textHeader + (text != null && !text.isEmpty() ? "\n\t\t\t\t\t" + text : "");
+            return DateTimeFormatter.ofPattern(PATTERN).format(startDate) + " - " + DateTimeFormatter.ofPattern(PATTERN).format(endDate) + '\t' + textHeader + (text != null && !text.isEmpty() ? "\n\t\t\t\t\t" + text : "");
         }
     }
 }

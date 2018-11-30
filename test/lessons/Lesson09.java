@@ -6,6 +6,9 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -47,5 +50,16 @@ public class Lesson09 {
             Files.list(path).map(Path::toFile).forEach(File::delete); //Files.walk(path).map(Path::toFile).forEach(File::delete); //del 2.txt & 3.txt
             Files.delete(path); // del tmp
         }
+    }
+
+    @Test
+    public void DateTimeParseTest() throws Exception {
+
+        String localDate = "10/2013";
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/yyyy");
+        YearMonth ym = YearMonth.parse(localDate, dtf);
+        LocalDate ld = ym.atDay(1);
+        System.out.println(ld);
+
     }
 }
