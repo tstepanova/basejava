@@ -69,11 +69,11 @@ public class ResumeTestData {
 
         OrganizationSection educationSection = new OrganizationSection();
         educationSection.setList(new Organization(new Link("Coursera", "https://www.coursera.org/course/progfun"), new Organization.Position(2013, Month.MARCH, 2013, Month.MAY, "\"Functional Programming Principles in Scala\" by Martin Odersky", null)));
-        educationSection.setList(new Organization(new Link("Luxoft", "http://www.luxoft-training.ru/training/catalog/course.html?ID=22366"), new Organization.Position(2011, Month.MARCH, 2011, Month.APRIL, "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"", "")));
-        educationSection.setList(new Organization(new Link("Siemens AG", "http://www.siemens.ru/"), new Organization.Position(2005, Month.JANUARY, 2005, Month.APRIL, "3 месяца обучения мобильным IN сетям (Берлин)", "")));
-        educationSection.setList(new Organization(new Link("Alcatel", "http://www.alcatel.ru/"), new Organization.Position(1997, Month.SEPTEMBER, 1998, Month.MARCH, "6 месяцев обучения цифровым телефонным сетям (Москва)", "")));
-        educationSection.setList(new Organization(new Link("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", "http://www.ifmo.ru/"), new Organization.Position(1993, Month.SEPTEMBER, 1996, Month.JULY, "Аспирантура (программист С, С++)", ""), new Organization.Position(DateUtil.of(1987, Month.SEPTEMBER), DateUtil.of(1993, Month.JULY), "Инженер (программист Fortran, C)", "")));
-        educationSection.setList(new Organization(new Link("Заочная физико-техническая школа при МФТИ", "http://www.school.mipt.ru/"), new Organization.Position(1984, Month.SEPTEMBER, 1987, Month.JUNE, "Закончил с отличием", "")));
+        educationSection.setList(new Organization(new Link("Luxoft", "http://www.luxoft-training.ru/training/catalog/course.html?ID=22366"), new Organization.Position(2011, Month.MARCH, 2011, Month.APRIL, "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"", null)));
+        educationSection.setList(new Organization(new Link("Siemens AG", "http://www.siemens.ru/"), new Organization.Position(2005, Month.JANUARY, 2005, Month.APRIL, "3 месяца обучения мобильным IN сетям (Берлин)", null)));
+        educationSection.setList(new Organization(new Link("Alcatel", "http://www.alcatel.ru/"), new Organization.Position(1997, Month.SEPTEMBER, 1998, Month.MARCH, "6 месяцев обучения цифровым телефонным сетям (Москва)", null)));
+        educationSection.setList(new Organization(new Link("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", "http://www.ifmo.ru/"), new Organization.Position(1993, Month.SEPTEMBER, 1996, Month.JULY, "Аспирантура (программист С, С++)", null), new Organization.Position(DateUtil.of(1987, Month.SEPTEMBER), DateUtil.of(1993, Month.JULY), "Инженер (программист Fortran, C)", null)));
+        educationSection.setList(new Organization(new Link("Заочная физико-техническая школа при МФТИ", "http://www.school.mipt.ru/"), new Organization.Position(1984, Month.SEPTEMBER, 1987, Month.JUNE, "Закончил с отличием", null)));
         resume.addSection(SectionType.EDUCATION, educationSection);
     }
 }

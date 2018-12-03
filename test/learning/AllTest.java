@@ -1,4 +1,4 @@
-package lessons;
+package learning;
 
 import org.junit.Test;
 
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class Lesson09 {
+public class AllTest {
 
     @Test
     public void NIOtest() throws Exception {
