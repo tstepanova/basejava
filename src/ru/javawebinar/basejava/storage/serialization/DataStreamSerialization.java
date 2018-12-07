@@ -18,24 +18,81 @@ public class DataStreamSerialization implements SerializationStrategy {
     @Override
     public void doUpdateElement(Resume resume, OutputStream os) throws IOException {
         sb = new StringBuilder();
-        resumeToText(resume);
+
+        append("[");
+        append("CONTACTS");
+        append(resume.getUuid());
+        append(resume.getFullName());
+
+        Map<ContactType, Link> contacts = resume.getContacts();
+        append(contacts.size());
+        for (Map.Entry<ContactType, Link> entry : contacts.entrySet()) {
+            append(entry.getKey().name());
+            Link link = entry.getValue();
+            append(link.getText());
+            append(link.getUrl());
+        }
+        append("]");
+
+        Map<SectionType, AbstractSection> sections = resume.getSections();
+        for (Map.Entry<SectionType, AbstractSection> entry : sections.entrySet()) {
+            SectionType type = entry.getKey();
+            AbstractSection section = entry.getValue();
+            append("[");
+            append(type);
+            switch (type) {
+                case PERSONAL:
+                case OBJECTIVE:
+                    if (section != null) {
+                        append(((TextSection) sections.get(type)).getText());
+                    } else {
+                        append("undefined");
+                    }
+                    break;
+                case ACHIEVEMENT:
+                case QUALIFICATIONS:
+                    if (section != null) {
+                        for (String element : ((ListSection) sections.get(type)).getList()) {
+                            append(element);
+                        }
+                    } else {
+                        append(0);
+                    }
+                    break;
+                case EXPERIENCE:
+                case EDUCATION:
+                    if (section != null) {
+                        for (Organization organization : ((OrganizationSection) sections.get(type)).getList()) {
+                            Link link = organization.getSectionHeader();
+                            append(link.getText());
+                            append(link.getUrl());
+                            List<Organization.Position> listPositions = organization.getPositions();
+                            if (listPositions != null) {
+                                append(listPositions.size());
+                                for (Organization.Position position : listPositions) {
+                                    append(DateTimeFormatter.ofPattern(position.getPattern()).format(position.getStartDate()));
+                                    append(DateTimeFormatter.ofPattern(position.getPattern()).format(position.getEndDate()));
+                                    append(position.getTextHeader());
+                                    append(position.getText());
+                                }
+                            } else {
+                                append(0);
+                            }
+                        }
+                    } else {
+                        append(0);
+                    }
+                    break;
+            }
+            append("]");
+        }
         try (DataOutputStream dos = new DataOutputStream(os)) {
             dos.writeUTF(sb.toString());
-            System.out.println("");
         }
     }
 
-    @Override
-    public Resume doGetElement(InputStream is) throws IOException {
-        String text = null;
-        try (DataInputStream dis = new DataInputStream(is)) {
-            text = dis.readUTF();
-        }
-        return textToResume(text);
-    }
-
-    private void append(String text) {
-        if (text != null && !text.isEmpty()) {
+    private void append(Object text) {
+        if (text != null) {
             sb.append(text);
         } else {
             sb.append("undefined");
@@ -43,153 +100,82 @@ public class DataStreamSerialization implements SerializationStrategy {
         sb.append(NEWLINE);
     }
 
-    private void append(int text) {
-        sb.append(text);
-        sb.append(NEWLINE);
-    }
-
-    private void append(Link link) {
-        append(link.getText());
-        append(link.getUrl());
-    }
-
-    private void append(TextSection section) {
-        if (section != null) {
-            append(section.getText());
-        } else {
-            append("undefined");
+    @Override
+    public Resume doGetElement(InputStream is) throws IOException {
+        Resume resume = null;
+        String text = null;
+        try (DataInputStream dis = new DataInputStream(is)) {
+            text = dis.readUTF();
         }
-    }
-
-    private void append(ListSection section) {
-        if (section != null) {
-            for (String element : section.getList()) {
-                append(element);
+        if (text != null) {
+            List<String[]> sectionsList = new ArrayList<>();
+            String[] sectionsArray = text.split("(\\[|\\])");
+            for (int i = 0; i < sectionsArray.length; i++) {
+                if (sectionsArray[i] != null && !sectionsArray[i].isEmpty()) {
+                    String[] linesArray = sectionsArray[i].split(NEWLINE);
+                    if (linesArray != null && linesArray.length > 0) sectionsList.add(linesArray);
+                }
             }
-        } else {
-            append(0);
-        }
-    }
 
-    private void append(OrganizationSection section) {
-        if (section != null) {
-            for (Organization organization : section.getList()) {
-                append(organization.getSectionHeader());
-                append(organization.getPositions());
+            for (int i = 0; i < sectionsList.size(); i++) {
+                String[] section = sectionsList.get(i);
+                int start = 0;
+                for (int j = 0; j < section.length; j++) {
+                    if (section[j] != null && !section[j].isEmpty()) {
+                        start = j;
+                        break;
+                    }
+                }
+                String type = section[start];
+                switch (type) {
+                    case "CONTACTS":
+                        resume = new Resume(section[start + 1], section[start + 2]);
+                        int contactsSize = Integer.valueOf(section[start + 3]);
+                        for (int j = start + 4; j < start + 4 + contactsSize * 3; j = j + 3) {
+                            resume.addContact(ContactType.valueOf(section[j]), new Link(read(section[j + 1]), read(section[j + 2])));
+                        }
+                        break;
+                    case "PERSONAL":
+                    case "OBJECTIVE":
+                        resume.addSection(SectionType.valueOf(type), new TextSection(read(section[start + 1])));
+                        break;
+                    case "ACHIEVEMENT":
+                    case "QUALIFICATIONS":
+                        List<String> list = new ArrayList<>();
+                        for (int j = start + 1; j < section.length; j++) {
+                            list.add(read(section[j]));
+                        }
+                        resume.addSection(SectionType.valueOf(type), new ListSection(list));
+                        break;
+                    case "EXPERIENCE":
+                    case "EDUCATION":
+                        OrganizationSection orgSection = new OrganizationSection();
+                        int step = 1;
+                        for (int j = start + 1; j < section.length - 3; j = j + step) {
+                            String linkText = read(section[j]);
+                            String linkUrl = read(section[j + 1]);
+                            int cntPositions = Integer.valueOf(section[j + 2]);
+                            int startLine = j + 3;
+                            List<Organization.Position> positionList = new ArrayList<>(cntPositions);
+                            for (int k = startLine; k < startLine + cntPositions * 4; k = k + 4) {
+                                LocalDate startDate = DateUtil.of(read(section[k]), Organization.Position.getPattern());
+                                LocalDate endDate = DateUtil.of(read(section[k + 1]), Organization.Position.getPattern());
+                                Organization.Position position = new Organization.Position(startDate, endDate, read(section[k + 2]), read(section[k + 3]));
+                                positionList.add(position);
+                            }
+                            orgSection.setList(new Organization(new Link(linkText, linkUrl), positionList));
+                            step = 3 + cntPositions * 4;
+                        }
+                        resume.addSection(SectionType.valueOf(type), orgSection);
+                        break;
+                }
             }
-        } else {
-            append(0);
         }
-    }
-
-    private void append(List<Organization.Position> list) {
-        if (list != null) {
-            append(list.size());
-            for (Organization.Position position : list) {
-                append(DateTimeFormatter.ofPattern(position.getPattern()).format(position.getStartDate()));
-                append(DateTimeFormatter.ofPattern(position.getPattern()).format(position.getEndDate()));
-                append(position.getTextHeader());
-                append(position.getText());
-            }
-        } else {
-            append(0);
-        }
-    }
-
-    private void resumeToText(Resume resume) {
-        append(resume.getUuid());
-        append(resume.getFullName());
-
-        append("[CONTACTS]");
-        Map<ContactType, Link> contacts = resume.getContacts();
-        append(contacts.size());
-        for (Map.Entry<ContactType, Link> entry : contacts.entrySet()) {
-            append(entry.getKey().name());
-            append(entry.getValue());
-        }
-
-        Map<SectionType, AbstractSection> sections = resume.getSections();
-        append("[OBJECTIVE]");
-        append((TextSection) sections.get(SectionType.OBJECTIVE));
-        append("[PERSONAL]");
-        append((TextSection) sections.get(SectionType.PERSONAL));
-        append("[ACHIEVEMENT]");
-        append((ListSection) sections.get(SectionType.ACHIEVEMENT));
-        append("[QUALIFICATIONS]");
-        append((ListSection) sections.get(SectionType.QUALIFICATIONS));
-        append("[EXPERIENCE]");
-        append((OrganizationSection) sections.get(SectionType.EXPERIENCE));
-        append("[EDUCATION]");
-        append((OrganizationSection) sections.get(SectionType.EDUCATION));
+        return resume;
     }
 
     private String read(String text) {
         if (text.equals("undefined")) return null;
         return text;
-    }
-
-    private List<Organization.Position> readPositions(String[] text, int startLine, int cntPositions) {
-        List<Organization.Position> positionList = new ArrayList<>(cntPositions);
-        for (int i = startLine; i < startLine + cntPositions * 4; i = i + 4) {
-            LocalDate startDate = DateUtil.of(read(text[i]), Organization.Position.getPattern());
-            LocalDate endDate = DateUtil.of(read(text[i + 1]), Organization.Position.getPattern());
-            Organization.Position position = new Organization.Position(startDate, endDate, read(text[i + 2]), read(text[i + 3]));
-            positionList.add(position);
-        }
-        return positionList;
-    }
-
-    private OrganizationSection readOrgSection(String[] text) {
-        OrganizationSection section = new OrganizationSection();
-        int step = 1;
-        for (int i = 0; i < text.length - 3; i = i + step) {
-            String linkText = read(text[i]);
-            String linkUrl = read(text[i + 1]);
-            int cntPositions = Integer.valueOf(text[i + 2]);
-            int start = i + 3;
-            Organization organization = new Organization(new Link(linkText, linkUrl), readPositions(text, start, cntPositions));
-            section.setList(organization);
-            step = 3 + cntPositions * 4;
-        }
-        return section;
-    }
-
-    private ListSection readListSection(String[] text) {
-        int sectionSize = text.length;
-        List<String> list = new ArrayList<>(sectionSize);
-        for (int i = 0; i < sectionSize; i++) {
-            list.add(read(text[i]));
-        }
-        return new ListSection(list);
-    }
-
-    private Resume textToResume(String text) {
-        if (text != null) {
-            String[] head = text.split(NEWLINE + "\\[CONTACTS\\]" + NEWLINE)[0].split(NEWLINE);
-            String[] contacts = text.split(NEWLINE + "\\[OBJECTIVE\\]" + NEWLINE)[0].split(NEWLINE + "\\[CONTACTS\\]" + NEWLINE)[1].split(NEWLINE);
-            String[] objective = text.split(NEWLINE + "\\[PERSONAL\\]" + NEWLINE)[0].split(NEWLINE + "\\[OBJECTIVE\\]" + NEWLINE)[1].split(NEWLINE);
-            String[] personal = text.split(NEWLINE + "\\[ACHIEVEMENT\\]" + NEWLINE)[0].split(NEWLINE + "\\[PERSONAL\\]" + NEWLINE)[1].split(NEWLINE);
-            String[] achievement = text.split(NEWLINE + "\\[QUALIFICATIONS\\]" + NEWLINE)[0].split(NEWLINE + "\\[ACHIEVEMENT\\]" + NEWLINE)[1].split(NEWLINE);
-            String[] qualifications = text.split(NEWLINE + "\\[EXPERIENCE\\]" + NEWLINE)[0].split(NEWLINE + "\\[QUALIFICATIONS\\]" + NEWLINE)[1].split(NEWLINE);
-            String[] experience = text.split(NEWLINE + "\\[EDUCATION\\]" + NEWLINE)[0].split(NEWLINE + "\\[EXPERIENCE\\]" + NEWLINE)[1].split(NEWLINE);
-            String[] education = text.split(NEWLINE + "\\[EDUCATION\\]" + NEWLINE)[1].split(NEWLINE);
-
-            Resume resume = new Resume(head[0], head[1]);
-
-            int contactsSize = Integer.valueOf(contacts[0]);
-            for (int i = 1; i < contactsSize * 3; i = i + 3) {
-                resume.addContact(ContactType.valueOf(read(contacts[i])), new Link(read(contacts[i + 1]), read(contacts[i + 2])));
-            }
-
-            resume.addSection(SectionType.OBJECTIVE, new TextSection(read(objective[0])));
-            resume.addSection(SectionType.PERSONAL, new TextSection(read(personal[0])));
-            resume.addSection(SectionType.ACHIEVEMENT, readListSection(achievement));
-            resume.addSection(SectionType.QUALIFICATIONS, readListSection(qualifications));
-            resume.addSection(SectionType.EXPERIENCE, readOrgSection(experience));
-            resume.addSection(SectionType.EDUCATION, readOrgSection(education));
-
-            return resume;
-        }
-        return null;
     }
 }

@@ -41,7 +41,9 @@ public class AllTest {
 
         //list
         List<Path> list = new ArrayList<>(10);
-        Files.list(path).limit(10).forEach(fileName -> {list.add(fileName);});
+        Files.list(path).limit(10).forEach(fileName -> {
+            list.add(fileName);
+        });
         System.out.println("list: " + list.get(0));
 
         //delete
@@ -60,6 +62,17 @@ public class AllTest {
         YearMonth ym = YearMonth.parse(localDate, dtf);
         LocalDate ld = ym.atDay(1);
         System.out.println(ld);
+
+    }
+
+    @Test
+    public void SplitTest() throws Exception {
+        String newline = System.getProperty("line.separator");
+        String text = "[\r\n" + "section1\r\n" + "a1\r\n" + "b1\r\n" + "c1\r\n" + "]\r\n" + "[\r\n" + "section2\r\n" + "a2\r\n" + "b2\r\n" + "c2\r\n" + "]\r\n" + "[\r\n" + "section3\r\n" + "a3\r\n" + "b3\r\n" + "c3\r\n" + "]\r\n";
+        String[] arr = text.split("(\\[|\\])");
+        for (int i = 0; i < arr.length; i++) {
+            System.out.println(i + ") " + arr[i]);
+        }
 
     }
 }
