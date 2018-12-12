@@ -18,21 +18,18 @@ public class DataStreamSerialization implements SerializationStrategy {
             dos.writeUTF(resume.getUuid());
             dos.writeUTF(resume.getFullName());
 
-            dos.writeUTF("[");
-            dos.writeUTF("CONTACTS");
             Map<ContactType, Link> contacts = resume.getContacts();
+            dos.writeInt(contacts.size());
             for (Map.Entry<ContactType, Link> entry : contacts.entrySet()) {
                 dos.writeUTF(entry.getKey().name());
                 Link link = entry.getValue();
                 dos.writeUTF(link.getText());
                 dos.writeUTF(link.getUrl() == null ? "" : link.getUrl());
             }
-            dos.writeUTF("]");
 
             Map<SectionType, AbstractSection> sections = resume.getSections();
             for (Map.Entry<SectionType, AbstractSection> entry : sections.entrySet()) {
                 SectionType type = entry.getKey();
-                dos.writeUTF("[");
                 dos.writeUTF(type.name());
                 switch (type) {
                     case PERSONAL:
@@ -41,18 +38,22 @@ public class DataStreamSerialization implements SerializationStrategy {
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        for (String element : ((ListSection) sections.get(type)).getList()) {
+                        List<String> listString = ((ListSection) sections.get(type)).getList();
+                        dos.writeInt(listString.size());
+                        for (String element : listString) {
                             dos.writeUTF(element);
                         }
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        for (Organization organization : ((OrganizationSection) sections.get(type)).getList()) {
+                        List<Organization> listOrganization = ((OrganizationSection) sections.get(type)).getList();
+                        dos.writeInt(listOrganization.size());
+                        for (Organization organization : listOrganization) {
                             Link link = organization.getSectionHeader();
                             dos.writeUTF(link.getText());
                             dos.writeUTF(link.getUrl() == null ? "" : link.getUrl());
                             List<Organization.Position> listPositions = organization.getPositions();
-                            dos.writeUTF(String.valueOf(listPositions.size()));
+                            dos.writeInt(listPositions.size());
                             for (Organization.Position position : listPositions) {
                                 dos.writeUTF(DateTimeFormatter.ofPattern(Organization.Position.getPattern()).format(position.getStartDate()));
                                 dos.writeUTF(DateTimeFormatter.ofPattern(Organization.Position.getPattern()).format(position.getEndDate()));
@@ -62,7 +63,6 @@ public class DataStreamSerialization implements SerializationStrategy {
                         }
                         break;
                 }
-                dos.writeUTF("]");
             }
         }
     }
@@ -73,51 +73,50 @@ public class DataStreamSerialization implements SerializationStrategy {
         Resume resume;
         try (DataInputStream dis = new DataInputStream(is)) {
             resume = new Resume(dis.readUTF(), dis.readUTF());
+            int sectionSize = dis.readInt();
+            for (int i = 0; i < sectionSize; i++) {
+                String type = dis.readUTF();
+                String linkText = dis.readUTF();
+                String linkUrl = dis.readUTF();
+                resume.addContact(ContactType.valueOf(type), new Link(linkText, linkUrl.isEmpty() ? null : linkUrl));
+            }
             while (dis.available() > 0) {
-                if (dis.readUTF().equals("[")) {
-                    String type = dis.readUTF();
-                    switch (type) {
-                        case "CONTACTS":
-                            while (!(text = dis.readUTF()).equals("]")) {
-                                String linkText = dis.readUTF();
-                                String linkUrl = dis.readUTF();
-                                resume.addContact(ContactType.valueOf(text), new Link(linkText, linkUrl.isEmpty() ? null : linkUrl));
+                String type = dis.readUTF();
+                switch (type) {
+                    case "PERSONAL":
+                    case "OBJECTIVE":
+                        resume.addSection(SectionType.valueOf(type), new TextSection(dis.readUTF()));
+                        break;
+                    case "ACHIEVEMENT":
+                    case "QUALIFICATIONS":
+                        sectionSize = dis.readInt();
+                        List<String> list = new ArrayList<>(sectionSize);
+                        for (int i = 0; i < sectionSize; i++) {
+                            list.add(dis.readUTF());
+                        }
+                        resume.addSection(SectionType.valueOf(type), new ListSection(list));
+                        break;
+                    case "EXPERIENCE":
+                    case "EDUCATION":
+                        sectionSize = dis.readInt();
+                        OrganizationSection orgSection = new OrganizationSection();
+                        for (int i = 0; i < sectionSize; i++) {
+                            String linkText = dis.readUTF();
+                            String linkUrl = dis.readUTF();
+                            int cntPositions = dis.readInt();
+                            List<Organization.Position> positionList = new ArrayList<>(cntPositions);
+                            for (int j = 0; j < cntPositions; j++) {
+                                LocalDate startDate = DateUtil.of(dis.readUTF(), Organization.Position.getPattern());
+                                LocalDate endDate = DateUtil.of(dis.readUTF(), Organization.Position.getPattern());
+                                String positionTextHeader = dis.readUTF();
+                                String positionText = dis.readUTF();
+                                Organization.Position position = new Organization.Position(startDate, endDate, positionTextHeader, positionText.isEmpty() ? null : positionText);
+                                positionList.add(position);
                             }
-                            break;
-                        case "PERSONAL":
-                        case "OBJECTIVE":
-                            while (!(text = dis.readUTF()).equals("]")) {
-                                resume.addSection(SectionType.valueOf(type), new TextSection(text));
-                            }
-                            break;
-                        case "ACHIEVEMENT":
-                        case "QUALIFICATIONS":
-                            List<String> list = new ArrayList<>();
-                            while (!(text = dis.readUTF()).equals("]")) {
-                                list.add(text);
-                            }
-                            resume.addSection(SectionType.valueOf(type), new ListSection(list));
-                            break;
-                        case "EXPERIENCE":
-                        case "EDUCATION":
-                            OrganizationSection orgSection = new OrganizationSection();
-                            while (!(text = dis.readUTF()).equals("]")) {
-                                String linkUrl = dis.readUTF();
-                                int cntPositions = Integer.valueOf(dis.readUTF());
-                                List<Organization.Position> positionList = new ArrayList<>(cntPositions);
-                                for (int i = 0; i < cntPositions; i++) {
-                                    LocalDate startDate = DateUtil.of(dis.readUTF(), Organization.Position.getPattern());
-                                    LocalDate endDate = DateUtil.of(dis.readUTF(), Organization.Position.getPattern());
-                                    String positionTextHeader = dis.readUTF();
-                                    String positionText = dis.readUTF();
-                                    Organization.Position position = new Organization.Position(startDate, endDate, positionTextHeader, positionText.isEmpty() ? null : positionText);
-                                    positionList.add(position);
-                                }
-                                orgSection.setList(new Organization(new Link(text, linkUrl.isEmpty() ? null : linkUrl), positionList));
-                            }
-                            resume.addSection(SectionType.valueOf(type), orgSection);
-                            break;
-                    }
+                            orgSection.setList(new Organization(new Link(linkText, linkUrl.isEmpty() ? null : linkUrl), positionList));
+                        }
+                        resume.addSection(SectionType.valueOf(type), orgSection);
+                        break;
                 }
             }
         }
