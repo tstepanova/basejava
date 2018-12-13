@@ -30,7 +30,11 @@ public class OrganizationSection extends AbstractSection {
         return list;
     }
 
-    public void setList(Organization organization) {
+    public void setList(List<Organization> list) {
+        this.list = list;
+    }
+
+    public void addList(Organization organization) {
         list.add(organization);
     }
 
