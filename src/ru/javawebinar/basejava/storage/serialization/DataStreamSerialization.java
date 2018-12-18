@@ -20,14 +20,14 @@ public class DataStreamSerialization implements SerializationStrategy {
             dos.writeUTF(resume.getFullName());
 
             Map<ContactType, Link> contacts = resume.getContacts();
-            writeSection(dos, contacts.entrySet(), entry -> {
+            writeCollection(dos, contacts.entrySet(), entry -> {
                 dos.writeUTF(entry.getKey().name());
                 Link link = entry.getValue();
                 dos.writeUTF(link.getText());
                 dos.writeUTF(link.getUrl() == null ? "" : link.getUrl());
             });
 
-            writeSection(dos, resume.getSections().entrySet(), entry -> {
+            writeCollection(dos, resume.getSections().entrySet(), entry -> {
                 SectionType type = entry.getKey();
                 AbstractSection section = entry.getValue();
                 dos.writeUTF(type.name());
@@ -38,15 +38,15 @@ public class DataStreamSerialization implements SerializationStrategy {
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        writeSection(dos, ((ListSection) section).getList(), dos::writeUTF);
+                        writeCollection(dos, ((ListSection) section).getList(), dos::writeUTF);
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        writeSection(dos, ((OrganizationSection) section).getList(), organization -> {
+                        writeCollection(dos, ((OrganizationSection) section).getList(), organization -> {
                             Link link = organization.getSectionHeader();
                             dos.writeUTF(link.getText());
                             dos.writeUTF(link.getUrl() == null ? "" : link.getUrl());
-                            writeSection(dos, organization.getPositions(), position -> {
+                            writeCollection(dos, organization.getPositions(), position -> {
                                 writeDate(dos, position.getStartDate());
                                 writeDate(dos, position.getEndDate());
                                 dos.writeUTF(position.getTextHeader());
@@ -65,7 +65,7 @@ public class DataStreamSerialization implements SerializationStrategy {
         dos.writeUTF(dtf.format(ld));
     }
 
-    private <T> void writeSection(DataOutputStream dos, Collection<T> collection, Writer<T> writer) throws IOException {
+    private <T> void writeCollection(DataOutputStream dos, Collection<T> collection, Writer<T> writer) throws IOException {
         dos.writeInt(collection.size());
         for (T item : collection) {
             writer.write(item);
