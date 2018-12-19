@@ -61,44 +61,29 @@ public class MainConcurrency {
 
         final String resource1 = "resource1";
         final String resource2 = "resource2";
+        deadLock(resource1, resource2);
+        deadLock(resource2, resource1);
+    }
 
-        Thread thread1 = new Thread() {
+    private static void deadLock(Object resource1, Object resource2) {
+        Thread thread = new Thread() {
             @Override
             public void run() {
                 synchronized (resource1) {
-                    System.out.println("Thread 1: locked resource 1");
+                    System.out.println(getName() + ": locked " + resource1);
                     try {
                         Thread.sleep(50);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    System.out.println("Thread 1: waiting resource 2");
+                    System.out.println(getName() + ": waiting " + resource2);
                     synchronized (resource2) {
-                        System.out.println("Thread 1: locked resource 2");
+                        System.out.println(getName() + ": locked " + resource2);
                     }
                 }
             }
         };
-        thread1.start();
-
-        Thread thread2 = new Thread() {
-            @Override
-            public void run() {
-                synchronized (resource2) {
-                    System.out.println("Thread 2: locked resource 2");
-                    try {
-                        Thread.sleep(50);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    System.out.println("Thread 2: waiting resource 1");
-                    synchronized (resource1) {
-                        System.out.println("Thread 2: locked resource 1");
-                    }
-                }
-            }
-        };
-        thread2.start();
+        thread.start();
     }
 
     private synchronized void inc() {
