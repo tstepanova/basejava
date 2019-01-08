@@ -17,7 +17,7 @@ public class SqlStorage implements Storage {
 
     @Override
     public void clear() {
-        sqlHelper.executeQuery("DELETE FROM resume", null, (SqlHelper.ExecuterQuery<Void>) ps -> {
+        sqlHelper.executeQuery("DELETE FROM resume", null, ps -> {
             ps.execute();
             return null;
         });
@@ -37,7 +37,7 @@ public class SqlStorage implements Storage {
 
     @Override
     public void update(Resume r) {
-        sqlHelper.executeQuery("UPDATE resume r SET full_name =? WHERE uuid =?", r.getUuid(), (SqlHelper.ExecuterQuery<Void>) ps -> {
+        sqlHelper.executeQuery("UPDATE resume r SET full_name =? WHERE uuid =?", r.getUuid(), ps -> {
             ps.setString(1, r.getFullName());
             ps.setString(2, r.getUuid());
             if (ps.executeUpdate() == 0) {
@@ -49,7 +49,7 @@ public class SqlStorage implements Storage {
 
     @Override
     public void save(Resume r) {
-        sqlHelper.executeQuery("INSERT INTO resume (uuid, full_name) VALUES (?,?)", r.getUuid(), (SqlHelper.ExecuterQuery<Void>) ps -> {
+        sqlHelper.executeQuery("INSERT INTO resume (uuid, full_name) VALUES (?,?)", r.getUuid(), ps -> {
             ps.setString(1, r.getUuid());
             ps.setString(2, r.getFullName());
             ps.execute();
@@ -59,7 +59,7 @@ public class SqlStorage implements Storage {
 
     @Override
     public void delete(String uuid) {
-        sqlHelper.executeQuery("DELETE FROM resume r WHERE r.uuid =?", uuid, (SqlHelper.ExecuterQuery<Void>) ps -> {
+        sqlHelper.executeQuery("DELETE FROM resume r WHERE r.uuid =?", uuid, ps -> {
             ps.setString(1, uuid);
             if (ps.executeUpdate() == 0) {
                 throw new NotExistStorageException(uuid);
