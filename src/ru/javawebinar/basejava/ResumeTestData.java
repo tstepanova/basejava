@@ -1,11 +1,9 @@
 package ru.javawebinar.basejava;
 
-import ru.javawebinar.basejava.model.*;
-import ru.javawebinar.basejava.util.DateUtil;
+import ru.javawebinar.basejava.model.ContactType;
+import ru.javawebinar.basejava.model.Link;
+import ru.javawebinar.basejava.model.Resume;
 
-import java.time.Month;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 public class ResumeTestData {
@@ -25,7 +23,7 @@ public class ResumeTestData {
         resume.addContact(ContactType.GITHUBPROFILE, new Link("Профиль GitHub", "https://github.com/gkislin"));
         resume.addContact(ContactType.STACKOVERFLOWPROFILE, new Link("Профиль Stackoverflow", "https://stackoverflow.com/users/548473/gkislin"));
         resume.addContact(ContactType.HOMEPAGE, new Link("Домашняя страница", "http://gkislin.ru/"));
-
+/*
         resume.addSection(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
         resume.addSection(SectionType.PERSONAL, new TextSection("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры."));
 
@@ -74,6 +72,6 @@ public class ResumeTestData {
         educationSection.addList(new Organization(new Link("Alcatel", "http://www.alcatel.ru/"), new Organization.Position(1997, Month.SEPTEMBER, 1998, Month.MARCH, "6 месяцев обучения цифровым телефонным сетям (Москва)", null)));
         educationSection.addList(new Organization(new Link("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", "http://www.ifmo.ru/"), new Organization.Position(1993, Month.SEPTEMBER, 1996, Month.JULY, "Аспирантура (программист С, С++)", null), new Organization.Position(DateUtil.of(1987, Month.SEPTEMBER), DateUtil.of(1993, Month.JULY), "Инженер (программист Fortran, C)", null)));
         educationSection.addList(new Organization(new Link("Заочная физико-техническая школа при МФТИ", "http://www.school.mipt.ru/"), new Organization.Position(1984, Month.SEPTEMBER, 1987, Month.JUNE, "Закончил с отличием", null)));
-        resume.addSection(SectionType.EDUCATION, educationSection);
+        resume.addSection(SectionType.EDUCATION, educationSection);*/
     }
 }

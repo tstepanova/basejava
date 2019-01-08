@@ -1,7 +1,5 @@
 package ru.javawebinar.basejava.sql;
 
-import org.postgresql.util.PSQLException;
-import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.StorageException;
 
 import java.sql.Connection;
@@ -16,20 +14,31 @@ public class SqlHelper {
         connectionFactory = () -> DriverManager.getConnection(dbUrl, dbUser, dbPassword);
     }
 
-    public interface ExecuterQuery<T> {
+    public interface ExecutorQuery<T> {
         T execute(PreparedStatement ps) throws SQLException;
     }
 
-    public <T> T executeQuery(String sqlQuery, String uuid, ExecuterQuery<T> executer) {
+    public <T> T executeQuery(String sqlQuery, String uuid, ExecutorQuery<T> executor) {
         try (Connection conn = connectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sqlQuery)) {
-            return executer.execute(ps);
+            return executor.execute(ps);
         } catch (SQLException e) {
-            if (e instanceof PSQLException) {
-                if (e.getSQLState().equals("23505")) {
-                    throw new ExistStorageException(uuid);
-                }
+            throw ExceptionUtil.convertException(e, uuid);
+        }
+    }
+
+    public <T> T transactionalExecute(String uuid, SqlTransaction<T> executor) {
+        try (Connection conn = connectionFactory.getConnection()) {
+            try {
+                conn.setAutoCommit(false);
+                T res = executor.execute(conn);
+                conn.commit();
+                return res;
+            } catch (SQLException e) {
+                conn.rollback();
+                throw ExceptionUtil.convertException(e, uuid);
             }
+        } catch (SQLException e) {
             throw new StorageException(e);
         }
     }
