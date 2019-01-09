@@ -1,7 +1,6 @@
 package ru.javawebinar.basejava;
 
 import ru.javawebinar.basejava.model.ContactType;
-import ru.javawebinar.basejava.model.Link;
 import ru.javawebinar.basejava.model.Resume;
 
 import java.util.logging.Logger;
@@ -16,15 +15,15 @@ public class ResumeTestData {
     }
 
     public static void addInfo(Resume resume) {
-        resume.addContact(ContactType.PHONE, new Link("+7(921) 855-0482"));
-        resume.addContact(ContactType.SKYPE, new Link("grigory.kislin", "skype:grigory.kislin"));
-        resume.addContact(ContactType.EMAIL, new Link("gkislin@yandex.ru", "mailto:gkislin@yandex.ru"));
-        resume.addContact(ContactType.LINKEDINPROFILE, new Link("Профиль LinkedIn", "https://www.linkedin.com/in/gkislin"));
-        resume.addContact(ContactType.GITHUBPROFILE, new Link("Профиль GitHub", "https://github.com/gkislin"));
-        resume.addContact(ContactType.STACKOVERFLOWPROFILE, new Link("Профиль Stackoverflow", "https://stackoverflow.com/users/548473/gkislin"));
-        resume.addContact(ContactType.HOMEPAGE, new Link("Домашняя страница", "http://gkislin.ru/"));
-/*
-        resume.addSection(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
+        resume.addContact(ContactType.PHONE, "+7(921) 855-0482");
+        resume.addContact(ContactType.SKYPE, "grigory.kislin");
+        resume.addContact(ContactType.EMAIL, "gkislin@yandex.ru");
+        resume.addContact(ContactType.LINKEDINPROFILE, "https://www.linkedin.com/in/gkislin");
+        resume.addContact(ContactType.GITHUBPROFILE, "https://github.com/gkislin");
+        resume.addContact(ContactType.STACKOVERFLOWPROFILE, "https://stackoverflow.com/users/548473/gkislin");
+        resume.addContact(ContactType.HOMEPAGE, "http://gkislin.ru/");
+
+/*        resume.addSection(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
         resume.addSection(SectionType.PERSONAL, new TextSection("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры."));
 
         List<String> achievementList = new ArrayList<>();

@@ -19,12 +19,10 @@ public class DataStreamSerialization implements SerializationStrategy {
             dos.writeUTF(resume.getUuid());
             dos.writeUTF(resume.getFullName());
 
-            Map<ContactType, Link> contacts = resume.getContacts();
+            Map<ContactType, String> contacts = resume.getContacts();
             writeCollection(dos, contacts.entrySet(), entry -> {
                 dos.writeUTF(entry.getKey().name());
-                Link link = entry.getValue();
-                dos.writeUTF(link.getText());
-                dos.writeUTF(link.getUrl() == null ? "" : link.getUrl());
+                dos.writeUTF(entry.getValue());
             });
 
             writeCollection(dos, resume.getSections().entrySet(), entry -> {
@@ -83,9 +81,7 @@ public class DataStreamSerialization implements SerializationStrategy {
             resume = new Resume(dis.readUTF(), dis.readUTF());
             read(dis, () -> {
                 String type = dis.readUTF();
-                String linkText = dis.readUTF();
-                String linkUrl = dis.readUTF();
-                resume.addContact(ContactType.valueOf(type), new Link(linkText, linkUrl.isEmpty() ? null : linkUrl));
+                resume.addContact(ContactType.valueOf(type), dis.readUTF());
             });
             read(dis, () -> {
                 SectionType sectionType = SectionType.valueOf(dis.readUTF());

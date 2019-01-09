@@ -1,7 +1,6 @@
 package learning;
 
 import org.junit.Test;
-import ru.javawebinar.basejava.model.Link;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -75,18 +74,5 @@ public class AllTest {
             System.out.println(i + ") " + arr[i]);
         }
 
-    }
-
-    @Test
-    public void readLink() throws Exception {
-        String value = "gkislin@yandex.ru (mailto:gkislin@yandex.ru)"; //"+7(921) 855-0482";
-        String text = value;
-        String url = null;
-        if (value.substring(value.length() - 1, value.length()).equals(")")) {
-            url = value.substring(value.indexOf("(") + 1, value.length() - 1);
-            text = value.replace(" (" + url + ")", "");
-        }
-        Link link = new Link(text, url);
-        System.out.println(link.toString());
     }
 }
