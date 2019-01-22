@@ -11,7 +11,15 @@ public class SqlHelper {
     private final ConnectionFactory connectionFactory;
 
     public SqlHelper(String dbUrl, String dbUser, String dbPassword) {
-        connectionFactory = () -> DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+        connectionFactory = () -> {
+            org.postgresql.Driver postgresqlDriver = new org.postgresql.Driver();
+            try {
+                Class.forName(postgresqlDriver.getClass().getName());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            return DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+        };
     }
 
     public interface ExecutorQuery<T> {
@@ -19,8 +27,7 @@ public class SqlHelper {
     }
 
     public <T> T executeQuery(String sqlQuery, String uuid, ExecutorQuery<T> executor) {
-        try (Connection conn = connectionFactory.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sqlQuery)) {
+        try (Connection conn = connectionFactory.getConnection(); PreparedStatement ps = conn.prepareStatement(sqlQuery)) {
             return executor.execute(ps);
         } catch (SQLException e) {
             throw ExceptionUtil.convertException(e, uuid);

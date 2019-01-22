@@ -1,8 +1,9 @@
 package ru.javawebinar.basejava;
 
-import ru.javawebinar.basejava.model.ContactType;
-import ru.javawebinar.basejava.model.Resume;
+import ru.javawebinar.basejava.model.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class ResumeTestData {
@@ -23,7 +24,7 @@ public class ResumeTestData {
         resume.addContact(ContactType.STACKOVERFLOWPROFILE, "https://stackoverflow.com/users/548473/gkislin");
         resume.addContact(ContactType.HOMEPAGE, "http://gkislin.ru/");
 
-/*        resume.addSection(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
+        resume.addSection(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
         resume.addSection(SectionType.PERSONAL, new TextSection("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры."));
 
         List<String> achievementList = new ArrayList<>();
@@ -53,7 +54,7 @@ public class ResumeTestData {
         qualificationsList.add("Родной русский, английский \"upper intermediate\"");
         resume.addSection(SectionType.QUALIFICATIONS, new ListSection(qualificationsList));
 
-        OrganizationSection experienceSection = new OrganizationSection();
+/*        OrganizationSection experienceSection = new OrganizationSection();
         experienceSection.addList(new Organization(new Link("Java Online Projects", "http://javaops.ru/"), new Organization.Position(2013, Month.OCTOBER, "Автор проекта.", "Создание, организация и проведение Java онлайн проектов и стажировок.")));
         experienceSection.addList(new Organization(new Link("Wrike", "https://www.wrike.com/"), new Organization.Position(2014, Month.OCTOBER, 2016, Month.JANUARY, "Старший разработчик (backend)", "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO.")));
         experienceSection.addList(new Organization(new Link("RIT Center"), new Organization.Position(2012, Month.APRIL, 2014, Month.OCTOBER, "Java архитектор", "Организация процесса разработки системы ERP для разных окружений: релизная политика, версионирование, ведение CI (Jenkins), миграция базы (кастомизация Flyway), конфигурирование системы (pgBoucer, Nginx), AAA via SSO. Архитектура БД и серверной части системы. Разработка интергационных сервисов: CMIS, BPMN2, 1C (WebServices), сервисов общего назначения (почта, экспорт в pdf, doc, html). Интеграция Alfresco JLAN для online редактирование из браузера документов MS Office. Maven + plugin development, Ant, Apache Commons, Spring security, Spring MVC, Tomcat,WSO2, xcmis, OpenCmis, Bonita, Python scripting, Unix shell remote scripting via ssh tunnels, PL/Python")));
