@@ -30,7 +30,10 @@ public class SqlStorage implements Storage {
         return sqlHelper.transactionalExecute(uuid, conn -> {
             Resume resume = null;
 
-            try (PreparedStatement ps = conn.prepareStatement("" + "SELECT * FROM resume r\n" + "LEFT JOIN contact c ON r.uuid = c.resume_uuid\n" + "WHERE r.uuid =?")) {
+            try (PreparedStatement ps = conn.prepareStatement("" +
+                    "SELECT * FROM resume r\n" +
+                    "LEFT JOIN contact c ON r.uuid = c.resume_uuid\n" +
+                    "WHERE r.uuid =?")) {
                 ps.setString(1, uuid);
                 ResultSet rs = ps.executeQuery();
                 if (!rs.next()) {
@@ -43,7 +46,9 @@ public class SqlStorage implements Storage {
 
             }
 
-            try (PreparedStatement ps = conn.prepareStatement("" + "SELECT * FROM resume r\n" + "LEFT JOIN section s ON r.uuid = s.resume_uuid\n" + "WHERE r.uuid =?")) {
+            try (PreparedStatement ps = conn.prepareStatement("" +
+                    "SELECT * FROM section s\n" +
+                    "WHERE s.resume_uuid =?")) {
                 ps.setString(1, uuid);
                 ResultSet rs = ps.executeQuery();
                 if (!rs.next()) {
@@ -120,32 +125,21 @@ public class SqlStorage implements Storage {
         for (Map.Entry<SectionType, AbstractSection> entry : resume.getSections().entrySet()) {
             SectionType type = entry.getKey();
             AbstractSection section = entry.getValue();
-            switch (type) {
-                case OBJECTIVE:
-                case PERSONAL:
-                    try (PreparedStatement ps = conn.prepareStatement("INSERT INTO section (resume_uuid, type, value) VALUES (?,?,?)")) {
-                        ps.setString(1, resume.getUuid());
-                        ps.setString(2, type.name());
+            try (PreparedStatement ps = conn.prepareStatement("INSERT INTO section (resume_uuid, type, value) VALUES (?,?,?)")) {
+                ps.setString(1, resume.getUuid());
+                ps.setString(2, type.name());
+                switch (type) {
+                    case OBJECTIVE:
+                    case PERSONAL:
                         ps.setString(3, ((TextSection) section).getText());
-                        ps.addBatch();
-                        ps.executeBatch();
-                    }
-                    break;
-                case ACHIEVEMENT:
-                case QUALIFICATIONS:
-                    try (PreparedStatement ps = conn.prepareStatement("INSERT INTO section (resume_uuid, type, value) VALUES (?,?,?)")) {
-                        ps.setString(1, resume.getUuid());
-                        ps.setString(2, type.name());
-                        List<String> sectionsList = ((ListSection) section).getList();
-                        String value = "";
-                        for (int i = 0; i < sectionsList.size(); i++) {
-                            value = value + sectionsList.get(i) + "\n";
-                        }
-                        ps.setString(3, value);
-                        ps.addBatch();
-                        ps.executeBatch();
-                    }
-                    break;
+                        break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS:
+                        ps.setString(3,  String.join("\n", ((ListSection) section).getList()));
+                        break;
+                }
+                ps.addBatch();
+                ps.executeBatch();
             }
         }
     }
@@ -164,7 +158,7 @@ public class SqlStorage implements Storage {
     @Override
     public List<Resume> getAllSorted() {
         return sqlHelper.transactionalExecute(null, conn -> {
-            Map<String, Resume> resumesMap = new HashMap<>();
+            Map<String, Resume> resumesMap = new LinkedHashMap<>();
             Resume resume = null;
 
             try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM resume ORDER BY full_name, uuid")) {
@@ -202,10 +196,7 @@ public class SqlStorage implements Storage {
                 }
             }
 
-            List<Resume> resumesList = new ArrayList<>(resumesMap.values());
-            Collections.sort(resumesList);
-
-            return resumesList;
+            return new ArrayList<>(resumesMap.values());
         });
     }
 
@@ -236,12 +227,7 @@ public class SqlStorage implements Storage {
                     break;
                 case ACHIEVEMENT:
                 case QUALIFICATIONS:
-                    String[] sections = value.split("\n");
-                    List<String> sectionsList = new ArrayList<>();
-                    for (int i = 0; i < sections.length; i++) {
-                        sectionsList.add(sections[i]);
-                    }
-                    resume.addSection(type, new ListSection(sectionsList));
+                    resume.addSection(type, new ListSection(Arrays.asList(value.split("\n"))));
                     break;
             }
         }
