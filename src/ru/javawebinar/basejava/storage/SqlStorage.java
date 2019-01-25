@@ -122,10 +122,10 @@ public class SqlStorage implements Storage {
     }
 
     private void saveSections(Connection conn, Resume resume) throws SQLException {
-        for (Map.Entry<SectionType, AbstractSection> entry : resume.getSections().entrySet()) {
-            SectionType type = entry.getKey();
-            AbstractSection section = entry.getValue();
-            try (PreparedStatement ps = conn.prepareStatement("INSERT INTO section (resume_uuid, type, value) VALUES (?,?,?)")) {
+        try (PreparedStatement ps = conn.prepareStatement("INSERT INTO section (resume_uuid, type, value) VALUES (?,?,?)")) {
+            for (Map.Entry<SectionType, AbstractSection> entry : resume.getSections().entrySet()) {
+                SectionType type = entry.getKey();
+                AbstractSection section = entry.getValue();
                 ps.setString(1, resume.getUuid());
                 ps.setString(2, type.name());
                 switch (type) {
@@ -139,8 +139,8 @@ public class SqlStorage implements Storage {
                         break;
                 }
                 ps.addBatch();
-                ps.executeBatch();
             }
+            ps.executeBatch();
         }
     }
 
