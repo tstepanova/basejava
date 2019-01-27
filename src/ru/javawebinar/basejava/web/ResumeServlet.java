@@ -1,6 +1,7 @@
 package ru.javawebinar.basejava.web;
 
 import ru.javawebinar.basejava.Config;
+import ru.javawebinar.basejava.model.ContactType;
 import ru.javawebinar.basejava.model.Resume;
 import ru.javawebinar.basejava.storage.Storage;
 
@@ -10,11 +11,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
 public class ResumeServlet extends HttpServlet {
 
-    private Storage storage;
+    private Storage storage; // = Config.get().getStorage();
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -23,51 +23,47 @@ public class ResumeServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
-
+        request.setCharacterEncoding("UTF-8");
+        String uuid = request.getParameter("uuid");
+        String fullName = request.getParameter("fullName");
+        Resume r = storage.get(uuid);
+        r.setFullName(fullName);
+        for (ContactType type : ContactType.values()) {
+            String value = request.getParameter(type.name());
+            if (value != null && value.trim().length() != 0) {
+                r.addContact(type, value);
+            } else {
+                r.getContacts().remove(type);
+            }
+        }
+        storage.update(r);
+        response.sendRedirect("resume");
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
-//        response.setHeader("Content-Type", "text/html; charset=UTF-8");
-        response.setContentType("text/html; charset=UTF-8");
         String uuid = request.getParameter("uuid");
-        response.getWriter().write(
-                "<html>\n" +
-                    "<head>\n" +
-                        "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n" +
-                        "<link rel=\"stylesheet\" href=\"css/style.css\">\n" +
-                        "<title>Список резюме</title>\n" +
-                    "</head>\n" +
-                    "<header>Список резюме</header>" +
-                    "<br\">" +
-                    "<body>\n" +
-                        "<section>\n" +
-                            "<table border=\"1\">\n" +
-                                "<tr>\n" +
-                                    "<th>ФИО</th>\n" +
-                                    "<th>ID</th>\n" +
-                                "</tr>\n" +
-                                (uuid == null ? resumeToHTML(storage.getAllSorted()) : resumeToHTML(storage.get(uuid))) +
-                            "</table>\n" +
-                        "</section>\n" +
-                    "</body>\n" +
-                "</html>\n");
-    }
-
-    private String resumeToHTML(List<Resume> resumes) {
-        String res = "";
-        for (Resume resume : resumes){
-            res += resumeToHTML(resume);
+        String action = request.getParameter("action");
+        if (action == null) {
+            request.setAttribute("resumes", storage.getAllSorted());
+            request.getRequestDispatcher("/WEB-INF/jsp/list.jsp").forward(request, response);
+            return;
         }
-        return res;
+        Resume r;
+        switch (action) {
+            case "delete":
+                storage.delete(uuid);
+                response.sendRedirect("resume");
+                return;
+            case "view":
+            case "edit":
+                r = storage.get(uuid);
+                break;
+            default:
+                throw new IllegalArgumentException("Action " + action + " is illegal");
+        }
+        request.setAttribute("resume", r);
+        request.getRequestDispatcher(
+                ("view".equals(action) ? "/WEB-INF/jsp/view.jsp" : "/WEB-INF/jsp/edit.jsp")
+        ).forward(request, response);
     }
-
-    private String resumeToHTML(Resume resume) {
-        return "<tr>\n" +
-                    "<td>" + resume.getFullName() + "</td>\n" +
-                    "<td>" + resume.getUuid() + "</td>\n" +
-                "</tr>\n";
-    }
-
 }
