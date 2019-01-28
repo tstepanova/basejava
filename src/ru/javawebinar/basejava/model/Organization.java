@@ -82,14 +82,14 @@ public class Organization extends AbstractSection implements Serializable {
     @XmlAccessorType(XmlAccessType.FIELD)
     public static class Position implements Serializable {
 
-        private static final String PATTERN = "MM/yyyy";
+        public static final String PATTERN = "MM/yyyy";
 
         @XmlJavaTypeAdapter(LocalDateAdapter.class)
-        private LocalDate startDate;
+        public LocalDate startDate;
         @XmlJavaTypeAdapter(LocalDateAdapter.class)
-        private LocalDate endDate;
-        private String textHeader;
-        private String text;
+        public LocalDate endDate;
+        public String textHeader;
+        public String text;
 
         public Position() {
         }

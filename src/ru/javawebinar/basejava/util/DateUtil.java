@@ -1,9 +1,13 @@
 package ru.javawebinar.basejava.util;
 
+import ru.javawebinar.basejava.model.Organization;
+
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+
+import static ru.javawebinar.basejava.model.Organization.Position.PATTERN;
 
 public class DateUtil {
 
@@ -18,5 +22,13 @@ public class DateUtil {
         YearMonth ym = YearMonth.parse(localDate, dtf);
         LocalDate ld = ym.atDay(1);
         return ld;
+    }
+
+    public static String of(LocalDate localDate) {
+        return DateTimeFormatter.ofPattern(PATTERN).format(localDate);
+    }
+
+    public static String of(Organization.Position position) {
+        return DateTimeFormatter.ofPattern(PATTERN).format(position.getStartDate()) + " - " + (position.getEndDate().isEqual(NOW) ? "Сейчас" : DateTimeFormatter.ofPattern(PATTERN).format(position.getEndDate()));
     }
 }
