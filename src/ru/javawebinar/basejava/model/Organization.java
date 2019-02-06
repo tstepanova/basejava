@@ -20,6 +20,8 @@ public class Organization extends AbstractSection implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public static final Organization EMPTY = new Organization(Link.EMPTY, Position.EMPTY);
+
     private Link sectionHeader;
     private List<Position> positions = new ArrayList<>();
 
@@ -83,6 +85,8 @@ public class Organization extends AbstractSection implements Serializable {
     public static class Position implements Serializable {
 
         public static final String PATTERN = "MM/yyyy";
+
+        public static final Position EMPTY = new Position(DateUtil.NOW, DateUtil.NOW, "", "");
 
         @XmlJavaTypeAdapter(LocalDateAdapter.class)
         public LocalDate startDate;

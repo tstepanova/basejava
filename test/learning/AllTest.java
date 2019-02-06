@@ -1,6 +1,10 @@
 package learning;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.junit.Test;
+import ru.javawebinar.basejava.ResumeTestData;
+import ru.javawebinar.basejava.model.Resume;
+import ru.javawebinar.basejava.util.HtmlUtil;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -11,6 +15,7 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 public class AllTest {
@@ -66,7 +71,7 @@ public class AllTest {
     }
 
     @Test
-    public void SplitTest() throws Exception {
+    public void splitTest() throws Exception {
         String newline = System.getProperty("line.separator");
         String text = "[\r\n" + "section1\r\n" + "a1\r\n" + "b1\r\n" + "c1\r\n" + "]\r\n" + "[\r\n" + "section2\r\n" + "a2\r\n" + "b2\r\n" + "c2\r\n" + "]\r\n" + "[\r\n" + "section3\r\n" + "a3\r\n" + "b3\r\n" + "c3\r\n" + "]\r\n";
         String[] arr = text.split("(\\[|\\])");
@@ -74,5 +79,22 @@ public class AllTest {
             System.out.println(i + ") " + arr[i]);
         }
 
+    }
+
+    @Test
+    public void stringEscapeUtilsTest() {
+        String str = "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"";
+        String str_escape = StringEscapeUtils.escapeHtml4(str);
+        String str_unescape = StringEscapeUtils.unescapeHtml4(str_escape);
+        System.out.println(str_escape);
+        System.out.println(str_unescape);
+    }
+
+    @Test
+    public void escapeResume() {
+        Resume resume = new Resume(UUID.randomUUID().toString(), "FULLNAME");
+        ResumeTestData.addInfo(resume);
+        System.out.println("Before:\n" + resume.toString() + "\n");
+        System.out.println("After:\n" + HtmlUtil.escapeHtml(resume).toString() + "\n");
     }
 }

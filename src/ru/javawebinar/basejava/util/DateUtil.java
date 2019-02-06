@@ -24,7 +24,18 @@ public class DateUtil {
         return ld;
     }
 
+    public static LocalDate of(String localDate) {
+        if(localDate == null || localDate.isEmpty()) {
+            return NOW;
+        }
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(PATTERN);
+        YearMonth ym = YearMonth.parse(localDate, dtf);
+        LocalDate ld = ym.atDay(1);
+        return ld;
+    }
+
     public static String of(LocalDate localDate) {
+        if(localDate.isEqual(NOW)) return "";
         return DateTimeFormatter.ofPattern(PATTERN).format(localDate);
     }
 

@@ -1,10 +1,15 @@
 package ru.javawebinar.basejava.model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class ListSection extends AbstractSection {
 
     private static final long serialVersionUID = 1L;
+
+    public static final ListSection EMPTY = new ListSection(new ArrayList<>(Collections.singletonList("")));
 
     private List<String> list;
 
