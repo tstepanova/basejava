@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class Config {
-    private static final String PROPFILENAME = "resumes.properties";
+    private static final String PROPFILENAME = "/resumes.properties";
     private static final Config INSTANCE = new Config();
 
     private File storageDir;
@@ -20,7 +20,7 @@ public class Config {
     }
 
     private Config() {
-        try (InputStream is = Config.class.getClassLoader().getResourceAsStream(PROPFILENAME)) {
+        try (InputStream is = Config.class.getResourceAsStream(PROPFILENAME)) {
             Properties props = new Properties();
             props.load(is);
             storageDir = new File(props.getProperty("storage.dir"));
